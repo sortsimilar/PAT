@@ -1,74 +1,92 @@
-
-
 #include<iostream>
+#include<vector>
 
 using namespace std;
 
 int main()
 {
-	float first[1001];
-	float second[1001];
-	float output[1001];
+	int first_num;
+	cin >> first_num;
+	vector<int> first_exponent(first_num);
+	vector<float> first_coefficient(first_num);
 
-	for(int i=0;i<1001;i++)
+	for (int i = 0;i < first_num;i++)
 	{
-		first[i] = 0;
-		second[i] = 0;
-		output[i] = 0;
+		cin >> first_exponent[i];
+		cin >> first_coefficient[i];
 	}
-
-	// get input/////////////////////////////
-	int current_exponent;
-
-	int size_first;
-	cin>>size_first;
-	for(int i=0;i<size_first;i++)
-	{
-		cin>>current_exponent;
-		cin>>first[current_exponent];
-	}
-
-	int size_second;
-	cin>>size_second;
-	for(int i=0;i<size_second;i++)
-	{
-		cin>>current_exponent;
-		cin>>second[current_exponent];
-	}
-
-	// do addition;/////////////////////////
-	int count_not_zero = 0;
-	for(int i=0;i<1001;i++)
-	{
-		output[i] = first[i] + second[i];
-		if(output[i] != 0)
-		{
-			count_not_zero++;
-		}
-	}
-	// do output;/////////////////////////
 	
-	cout<<count_not_zero;
-	if(count_not_zero != 0)
+	int second_num; // number of second polynomial;
+	cin >> second_num;
+	vector<int> second_exponent(second_num);
+	vector<float> second_coefficient(second_num);
+
+	for (int i = 0;i < second_num;i++)
 	{
-		cout<<" ";
+		cin >> second_exponent[i];
+		cin >> second_coefficient[i];
 	}
-	for(int i=1000;i>=0;i--)
+
+	int output_num = 0;
+	vector<int> output_exponent;
+	vector<float> output_coefficient;
+
+
+	int first_index = 0;
+	int second_index = 0;
+
+	first_exponent.push_back(-1);
+	second_exponent.push_back(-1);
+
+//	for (int i = 0;i < first_num;i++) cout << first_exponent[i] << " ";
+	while (1)
 	{
-		if(output[i] != 0 && count_not_zero>=0)
+		if ((first_exponent[first_index] == -1) && (second_exponent[second_index] == -1))
 		{
-			cout<<i<<" ";
-			printf("%.1f", output[i]);
-			count_not_zero--;
-			if(count_not_zero > 0)
+			break;
+		}
+		else
+		{
+			if (first_exponent[first_index] < second_exponent[second_index])
 			{
-				cout<<" ";
+				output_exponent.push_back(second_exponent[second_index]);
+				output_coefficient.push_back(second_coefficient[second_index]);
+				second_index++;
 			}
+			else if (first_exponent[first_index] > second_exponent[second_index])
+			{
+				output_exponent.push_back(first_exponent[first_index]);
+				output_coefficient.push_back(first_coefficient[first_index]);
+				first_index++;
+			}
+			else
+			{
+				float sum = first_coefficient[first_index] + second_coefficient[second_index];
+				if (sum != 0)
+				{
+					output_exponent.push_back(first_exponent[first_index]);
+					output_coefficient.push_back(sum);
+				}
+				first_index++;
+				second_index++;
+			}
+
+		}
+
+	}
+
+	cout << output_exponent.size();
+	if (output_exponent.size() > 0)
+	{
+		cout << " ";
+		for (int i = 0;i < output_exponent.size();i++)
+		{
+			cout << output_exponent[i] << " ";
+			printf("%.1f", output_coefficient[i]);
+			if (i != output_exponent.size() - 1) cout << " ";
 		}
 	}
-	
 
 	system("pause");
 	return 0;
 }
-
