@@ -1,4 +1,5 @@
 #include<iostream>
+#include<stdio.h>
 #include<string>
 #include<sstream>
 
@@ -71,6 +72,5 @@ int main()
 		}
 	}
 
-	system("pause");
 	return 0;
 }
