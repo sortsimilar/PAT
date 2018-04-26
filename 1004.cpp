@@ -1,4 +1,5 @@
 #include<iostream>
+#include<stdio.h>
 #include<vector>
 using namespace std;
 
@@ -94,7 +95,6 @@ int main()
 		if (i < max_distance) cout << " ";
 	}
 
-	system("pause");
 	return 0;
 }
 /*  case 1;
