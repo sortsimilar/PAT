@@ -1,4 +1,5 @@
 #include<iostream>
+#include<stdio.h>
 #include<string>
 #include<vector>
 
@@ -39,6 +40,5 @@ int main()
 
 	cout << min_in_id<<" "<<max_out_id;
 
-	system("pause");
 	return 0;
 }
