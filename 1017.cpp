@@ -1,10 +1,23 @@
 #include<algorithm>
 #include<iostream>
+#include<stdio.h>
 #include<string>
 #include<vector>
 using namespace std;
 
-int stringtoint(string time)
+struct Person
+{
+	// clock;
+	int arrive_time;
+	int serve_time;
+	int finish_time;
+	int wait_time;
+
+	// length
+	int process_time;
+};
+
+int string_to_int(string time)
 {
 	int result;
 
@@ -18,6 +31,16 @@ int stringtoint(string time)
 	return result;
 }
 
+vector<Person> sequence; // sequence store input;
+
+
+bool compare_arrive(Person first, Person second)
+{
+	return first.arrive_time < second.arrive_time;
+}
+
+
+
 
 int main()
 {
@@ -26,40 +49,28 @@ int main()
 	int K; // num of windows;
 	cin >> K;
 
-	vector<int> arrive_time(N), arrive_sort(N), serve_time(N), finish_time(N), wait_time(N);
-	vector<int> process_time(N), process_sort(N);
 	vector<int> window_finish(K);
 
 	for (int i = 0;i < N;i++)
 	{
-		string temp;
-		cin >> temp;
-		arrive_time[i] = stringtoint(temp);
-		cin >> process_time[i];
+
+		string arrive_time;
+		cin>>arrive_time;
+		int process_time;
+		cin>>process_time;
+
+		Person temp;
+		temp.arrive_time =string_to_int(arrive_time);
+		temp.process_time = process_time;
+
+		sequence.push_back(temp);
 	}
 
-	int start = stringtoint("08:00:00");
-	int end = stringtoint("17:00:00");
+	// sort customers;
+	sort(sequence.begin(), sequence.end(), compare_arrive);
 
-	// sort arrive time;
-	for (int i = 0;i < N;i++)
-	{
-		arrive_sort[i] = arrive_time[i];
-		process_sort[i] = process_time[i];
-	}
-	sort(arrive_sort.begin(), arrive_sort.end());
-
-	// sort process time corresponding to arrive time;
-	for (int i = 0;i < N;i++)
-	{
-		for (int j = 0;j < N;j++)
-		{
-			if (arrive_sort[i] == arrive_time[j])
-			{
-				process_sort[i] = process_time[j];
-			}
-		}
-	}
+	int start = string_to_int("08:00:00");
+	int end = string_to_int("17:00:00");
 
 	// the queue store K's finish time;
 	for (int i = 0;i < K;i++)
@@ -68,11 +79,10 @@ int main()
 	}
 	
 
-	// suppose no customers come before 7;
 	double wait_sum = 0; int counter = 0;
 	for (int i = 0;i < N;i++)
 	{	
-		if (arrive_sort[i] > end) break;
+		if (sequence[i].arrive_time > end) break;
 
 		int min_finish = window_finish[0];
 		int window = 0;
@@ -86,35 +96,36 @@ int main()
 		}
 		
 
-		if (arrive_sort[i] <= min_finish) // if arrive early, must wait;
+		if (sequence[i].arrive_time <= min_finish) // if arrive early, must wait;
 		{
-			serve_time[i] = min_finish;
-			wait_time[i] = min_finish - arrive_sort[i];
+			sequence[i].serve_time = min_finish;
+			sequence[i].wait_time = min_finish - sequence[i].arrive_time;
 		}
 		else // if arrive late, then directly;
 		{
-			serve_time[i] = arrive_sort[i];
-			wait_time[i] = 0;
+			sequence[i].serve_time = sequence[i].arrive_time;
+			sequence[i].wait_time = 0;
 		}
 
-		wait_sum = wait_time[i] + wait_sum;
+		wait_sum = sequence[i].wait_time + wait_sum;
 		counter++;
-		if (process_sort[i] <= 3600)
+		if (sequence[i].process_time <= 3600)
 		{
-			finish_time[i] = serve_time[i] + process_sort[i] * 60;
+			sequence[i].finish_time = sequence[i].serve_time + sequence[i].process_time * 60;
 		}
 		else
 		{
-			finish_time[i] = serve_time[i] + 3600;
+			sequence[i].finish_time = sequence[i].serve_time + 3600;
 		}
-		window_finish[window] = finish_time[i];
+		window_finish[window] = sequence[i].finish_time;
 	}
 
-	/*
+/*	
 	for (int i = 0;i < N;i++)
 	{
-		cout << serve_time[i] <<" "<<finish_time[i]<<" "<<wait[i]<<endl;
-	}*/
+		cout << sequence[i].serve_time <<" "<<sequence[i].finish_time<<" "<<sequence[i].wait_time<<endl;
+	}
+*/
 
 	if (counter != 0)
 	{
@@ -127,8 +138,5 @@ int main()
 	}
 
 
-	
-
-	system("pause");
 	return 0;
 }
