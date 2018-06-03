@@ -45,7 +45,7 @@ int hash_insert(int key)
 		int index = (key + i*i) % hash_table.size();
 		if(hash_table[index]==0)
 		{
-			hash_table[index] = 1;
+			hash_table[index] = key;
 			location = index;
 			break;
 		}
