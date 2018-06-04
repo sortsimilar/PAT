@@ -14,12 +14,12 @@ struct Node{
 
 vector<Node> linklist(100001);
 vector<Node> locationlist;
-int first_addr;
+int head;
 
 // add prev to linklist;
-void add_prev(int first_addr)
+void add_prev(int head)
 {
-	int current = first_addr;
+	int current = head;
 	int current_location = 0;
 	int prev = -1;
 
@@ -32,9 +32,9 @@ void add_prev(int first_addr)
 
 }
 
-void set_location(int first_addr)
+void set_location(int head)
 {
-	int current = first_addr;
+	int current = head;
 	int current_location = 0;
 	while(current != -1)
 	{
@@ -62,9 +62,9 @@ string int_to_string(int addr)
 	return result;
 }
 
-void print_list(int first_addr)
+void print_list(int head)
 {
-	int	current = first_addr;
+	int	current = head;
 	while(current != -1)
 	{	
 		cout<<int_to_string(linklist[current].addr)<<" "<<linklist[current].data<<" "<<int_to_string(linklist[current].next);
@@ -86,8 +86,8 @@ void move_element(int dest_addr, int moved_addr)
     if(next_moved!=-1)    linklist[next_moved].prev = prev_moved; // consider last element;
 
 
-	if(dest_addr != first_addr)    linklist[linklist[dest_addr].prev].next = moved_addr;
-	else    first_addr = moved_addr;
+	if(dest_addr != head)    linklist[linklist[dest_addr].prev].next = moved_addr;
+	else    head = moved_addr;
 	linklist[moved_addr].next = dest_addr;
 
 	linklist[moved_addr].prev = linklist[dest_addr].prev;
@@ -101,7 +101,7 @@ void move_element(int dest_addr, int moved_addr)
 
 int main()
 {	
-	cin>>first_addr;
+	cin>>head;
 	int N;
 	cin>>N;
 	int K;
@@ -133,13 +133,13 @@ int main()
 		linklist[temp].next = save[i].next;
 	}
 	// add prev to linklist;
-	add_prev(first_addr);
+	add_prev(head);
 
 	// set location for linklist;
-	set_location(first_addr);
+	set_location(head);
 	
 //	cout<<endl;
-//	print_list(first_addr);
+//	print_list(head);
 
 
 
@@ -148,7 +148,7 @@ int main()
 
 	// location the first non-negative;
 	int non_negative = -1;
-	int current = first_addr;	
+	int current = head;	
 	while(current != -1)
 	{
 		if(linklist[current].data >= 0)
@@ -181,10 +181,10 @@ int main()
 	{
 		move_element(non_negative, negative_addr[i]);
 	}
-	set_location(first_addr);
+	set_location(head);
 
 	int beyond = -1;
-	current = first_addr;
+	current = head;
 	while(current != -1)
 	{
 		if(linklist[current].data > K)
@@ -220,7 +220,7 @@ int main()
 
 	// try to print linklist;
 //	cout<<endl;
-	print_list(first_addr);
+	print_list(head);
 
 	// try to move linklist element forward;
 //	cout<<endl;	
