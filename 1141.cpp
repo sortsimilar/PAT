@@ -1,5 +1,6 @@
 #include<algorithm>
 #include<iostream>
+#include<map>
 #include<string>
 #include<vector>
 using namespace std;
@@ -62,6 +63,7 @@ bool compare(School first, School second)
 
 int main()
 {
+// input process;
 	int N;
 	cin>>N;
 
@@ -81,6 +83,11 @@ int main()
 		sequence[i].school_name = temp;
 	}
 
+///////////////////////////////////////////////////////////
+	map<string, int> map_school;
+	int counter = 0;
+
+
 	for(int i=0;i<N;i++)
 	{
 		double temp_score;
@@ -88,8 +95,17 @@ int main()
 		else if(sequence[i].ID[0] == 'A')    temp_score = sequence[i].score;
 		else if(sequence[i].ID[0] == 'B')    temp_score = sequence[i].score / 1.5;		
 
-		if(locate_name(sequence[i].school_name) == -1)
+
+		map<string,int>::iterator it;
+		it = map_school.find(sequence[i].school_name);		
+
+
+
+		if(it == map_school.end())
 		{
+			map_school[sequence[i].school_name] = counter;
+			counter++;
+
 			School temp;
 			temp.name = sequence[i].school_name;
 			temp.tws = temp_score;
@@ -98,7 +114,7 @@ int main()
 		}
 		else
 		{
-			int location = locate_name(sequence[i].school_name);
+			int location = map_school[sequence[i].school_name];
 			school_list[location].tws += temp_score;
 			school_list[location].Ns++;
 		}
