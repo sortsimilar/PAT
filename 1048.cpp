@@ -1,10 +1,9 @@
-#include<algorithm>
 #include<iostream>
 #include<vector>
 using namespace std;
 
+vector<int> hash_table(1003);
 vector<int> sequence;
-
 
 
 
@@ -26,40 +25,41 @@ int main()
 		sequence.push_back(temp);
 	}
 
-	sort(sequence.begin(), sequence.end());
-
-/*
-	for(int i=0;i<N;i++)
+// initialize hash table;
+	for(int i=0;i<hash_table.size();i++)
 	{
-		cout<<sequence[i]<<" ";
+		hash_table[i] = 0;
 	}
-	cout<<endl;
-*/
 
-	int flag = false;
-	int start;
-	int end;
+// move data from sequence to hash table;
 	for(int i=0;i<N;i++)
 	{
-		for(int j=i+1;j<N;j++)
+		hash_table[sequence[i]]++;
+	}
+
+
+	int v1 = 1; 
+	int v2 = M - v1;
+	int flag = false;
+	while(v1<=v2)
+	{
+		if(hash_table[v1]>0)
 		{
-			if(sequence[i] + sequence[j] == M)
+			hash_table[v1]--;
+			if(hash_table[v2]>0)
 			{
 				flag = true;
-				start = i;
-				end = j;
-//				cout<<start<<" "<<end<<" "<<sequence[start]<<" "<<sequence[end]<<endl;
+				cout<<v1<<" "<<v2;
 				break;
 			}
 		}
-		if(flag==true)    break;
+
+
+		v1++;
+		v2--;
 	}
 
-	if(flag == false)    cout<<"No Solution";
-	else    cout<<sequence[start]<<" "<<sequence[end];
-
-
-
+	if(flag==false)    cout<<"No Solution";
 
 	return 0;
 }
