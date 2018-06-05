@@ -55,8 +55,7 @@ string int_to_string(int addr)
 
 	if(result != "-1")
 	{
-		int temp = 5 - result.length();
-		for(int i=0;i<temp;i++)    result = "0"+result;
+		while(result.length() < 5)    result = "0" + result;
 	}
 
 	return result;
