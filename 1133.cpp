@@ -8,7 +8,7 @@ struct Node{
 	int location;
 	int prev;
 	int addr;
-	int data;
+	int key;
 	int next;
 };
 
@@ -67,7 +67,7 @@ void print_list(int head)
 	int	current = head;
 	while(current != -1)
 	{	
-		cout<<int_to_string(linklist[current].addr)<<" "<<linklist[current].data<<" "<<int_to_string(linklist[current].next);
+		cout<<int_to_string(linklist[current].addr)<<" "<<linklist[current].key<<" "<<int_to_string(linklist[current].next);
 		if(linklist[current].next != -1)    cout<<endl;
 
 		current = linklist[current].next;
@@ -113,7 +113,7 @@ int main()
 	{
 		Node temp;
 		cin>>temp.addr;
-		cin>>temp.data;
+		cin>>temp.key;
 		cin>>temp.next;
 		save.push_back(temp);
 	}
@@ -129,7 +129,7 @@ int main()
 	{
 		int temp = save[i].addr;
 		linklist[temp].addr = save[i].addr;
-		linklist[temp].data = save[i].data;
+		linklist[temp].key = save[i].key;
 		linklist[temp].next = save[i].next;
 	}
 	// add prev to linklist;
@@ -151,7 +151,7 @@ int main()
 	int current = head;	
 	while(current != -1)
 	{
-		if(linklist[current].data >= 0)
+		if(linklist[current].key >= 0)
 		{
 			non_negative = current;
 			break;
@@ -165,7 +165,7 @@ int main()
 		current = non_negative;
 		while(current != -1)
 		{
-			if(linklist[current].data < 0)    negative_addr.push_back(current);
+			if(linklist[current].key < 0)    negative_addr.push_back(current);
 	
 			current = linklist[current].next;
 		}
@@ -175,7 +175,7 @@ int main()
 //	cout<<endl<<non_negative<<endl;
 
 // test negative;
-//	for(int i=0;i<negative_addr.size();i++)    cout<<linklist[negative_addr[i]].data<<endl;
+//	for(int i=0;i<negative_addr.size();i++)    cout<<linklist[negative_addr[i]].key<<endl;
 
 	for(int i=0;i<negative_addr.size();i++)
 	{
@@ -187,7 +187,7 @@ int main()
 	current = head;
 	while(current != -1)
 	{
-		if(linklist[current].data > K)
+		if(linklist[current].key > K)
 		{
 			beyond = current;
 			break;
@@ -204,7 +204,7 @@ int main()
 		current = beyond;
 		while(current != -1)
 		{
-			if((linklist[current].data>=0)&&(linklist[current].data<=K))
+			if((linklist[current].key>=0)&&(linklist[current].key<=K))
 			{
 				in_range.push_back(current);				
 			}
