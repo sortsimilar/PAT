@@ -12,6 +12,14 @@ struct Student
 	string school_name;
 };
 
+
+struct element
+{
+	double tws;
+	int Ns;
+};
+
+
 struct School
 {
 	string name;
@@ -19,34 +27,9 @@ struct School
 	int Ns;
 };
 
-// change chapital letter to lower case;
-char capital_to_lower(char letter)
-{
-	if((letter>='A')&&(letter<='Z'))
-	{
-		letter = letter - 'A' + 'a';
-	}
-
-	return letter;
-}
 
 vector<School> school_list;
 
-// test whether school in list or not;
-int locate_name(string name)
-{
-	int location = -1;
-	for(int i=0;i<school_list.size();i++)
-	{
-		if(name == school_list[i].name)
-		{
-			location = i;
-			break;
-		}
-	}
-
-	return location;
-}
 
 // compare function of sort;
 bool compare(School first, School second)
@@ -77,14 +60,14 @@ int main()
 
 		for(int j=0;j<temp.length();j++)
 		{
-			temp[j] = capital_to_lower(temp[j]); // change capital letter to lower case;
+			temp[j] = tolower(temp[j]); // change capital letter to lower case;
 		}
 
 		sequence[i].school_name = temp;
 	}
 
 ///////////////////////////////////////////////////////////
-	map<string, int> map_school;
+	map<string, element> map_school;
 	int counter = 0;
 
 
@@ -95,32 +78,21 @@ int main()
 		else if(sequence[i].ID[0] == 'A')    temp_score = sequence[i].score;
 		else if(sequence[i].ID[0] == 'B')    temp_score = sequence[i].score / 1.5;		
 
+		map_school[sequence[i].school_name].tws += temp_score;
+		map_school[sequence[i].school_name].Ns += 1;
 
-		map<string,int>::iterator it;
-		it = map_school.find(sequence[i].school_name);		
-
-
-
-		if(it == map_school.end())
-		{
-			map_school[sequence[i].school_name] = counter;
-			counter++;
-
-			School temp;
-			temp.name = sequence[i].school_name;
-			temp.tws = temp_score;
-			temp.Ns = 1;
-			school_list.push_back(temp);
-		}
-		else
-		{
-			int location = map_school[sequence[i].school_name];
-			school_list[location].tws += temp_score;
-			school_list[location].Ns++;
-		}
-
-	
 	}
+
+	map<string,element>::iterator it;
+	for(it = map_school.begin(); it != map_school.end(); it++) 
+	{
+		School temp;
+		temp.name = it->first;
+		temp.tws = (it->second).tws;
+		temp.Ns = (it->second).Ns;
+		school_list.push_back(temp);
+    }
+
 
 	sort(school_list.begin(), school_list.end(), compare);
 
@@ -140,5 +112,12 @@ int main()
 
 
 
+
 	return 0;
 }
+
+
+
+
+
+
