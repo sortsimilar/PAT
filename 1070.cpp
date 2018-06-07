@@ -6,7 +6,7 @@ using namespace std;
 
 struct Node
 {
-	int inventory;
+	double inventory;
 	double price;
 	double one_price;
 };
