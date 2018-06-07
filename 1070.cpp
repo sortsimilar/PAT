@@ -9,7 +9,6 @@ struct Node
 	int inventory;
 	double price;
 	double one_price;
-	int sell_amount; // amount of sell amount;
 };
 
 
@@ -33,7 +32,6 @@ int main()
 	for(int i=0;i<N;i++)
 	{
 		Node temp;
-		temp.sell_amount = 0;
 		save.push_back(temp);
 	}
 
@@ -57,30 +55,22 @@ int main()
 	sort(save.begin(), save.end(), compare_one);
 
 
-
+	double sum = 0;
 	int remain = D;
 	for(int i=0;i<save.size();i++)
 	{
 		if(remain > save[i].inventory)
 		{
-			save[i].sell_amount = save[i].inventory;
 			remain = remain - save[i].inventory;
+			sum = sum + save[i].price;
 		}	
 		else
 		{
-			save[i].sell_amount = remain;
+			sum = sum + remain*save[i].one_price;
 			remain = 0;
+			break;
 		}
 	}
-
-
-	double sum = 0;
-	for(int i=0;i<N;i++)
-	{
-//		cout<<save[i].inventory<<" "<<save[i].price<<" "<<save[i].one_price<<" "<<save[i].sell_amount<<endl;
-		sum = sum + save[i].one_price * save[i].sell_amount;
-	}
-
 
 	printf("%.2f", sum);
 
