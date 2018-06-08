@@ -15,9 +15,11 @@ struct Node
 };
 
 vector<Node> linklist(100001);
-vector<Node> linklist_origin;
 vector<Node> linklist_reverse;
 vector<Node> stack;
+
+int K; // length of the sublist to be reversed;
+
 
 // convert int to string;
 string int_to_string(int addr)
@@ -46,10 +48,24 @@ void create_list(int head)
 		temp.addr = linklist[current].addr;
 		temp.key = linklist[current].key;
 		temp.next = linklist[current].next;
-		linklist_origin.push_back(temp);
+
+
+		stack.push_back(temp);
+		if((stack.size()==K))
+		{
+			for(int j=stack.size()-1;j>=0;j--)
+			{
+				linklist_reverse.push_back(stack[j]);
+			}
+
+			stack.clear();
+		}
 
 		current = linklist[current].next;
 	}
+
+
+
 }
 
 
@@ -59,7 +75,7 @@ int main()
 	cin>>head;
 	int N; // total number of nodes;
 	cin>>N; 
-	int K; // length of the sublist to be reversed;
+	
 	cin>>K; 
 
 	vector<Node> save;
@@ -91,22 +107,6 @@ int main()
 //	create link list;
 	create_list(head);
 
-	
-	for(int i=0;i<linklist_origin.size();i++)
-	{
-//		cout<<linklist_origin[i].addr<<" "<<linklist_origin[i].key<<" "<<linklist_origin[i].next<<endl;
-		stack.push_back(linklist_origin[i]);
-		if((stack.size()==K))
-		{
-//			linklist_reverse.push_back(stack[0]);
-			for(int j=stack.size()-1;j>=0;j--)
-			{
-				linklist_reverse.push_back(stack[j]);
-			}
-
-			stack.clear();
-		}
-	}
 	for(int i=0;i<stack.size();i++)
 	{
 		linklist_reverse.push_back(stack[i]);
@@ -133,7 +133,7 @@ int main()
 }
 
 /*
-00100 6 4
+00100 6 3
 00000 4 99999
 00100 1 12309
 68237 6 -1
