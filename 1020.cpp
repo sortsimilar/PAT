@@ -1,4 +1,5 @@
 #include<iostream>
+#include<queue>
 #include<vector>
 using namespace std;
 
@@ -48,15 +49,39 @@ int build_tree(int inStart, int inEnd, int postStart, int postEnd)
 
 
 // print level
-void level_order(Node root, int level)
-{
-	if(level == 1)    level_sequence.push_back(root);
-	else if(level > 1)
-	{
-		if(root.left != -1)    level_order(binary[root.left], level-1); 
-		if(root.right != -1)    level_order(binary[root.right], level-1);
-	}
-}
+void level_order(int root,int totalNode)
+{  
+    int num = 0;  
+    if (root == -1)
+	{  
+        return;  
+    }  
+    queue<int> q;  
+    q.push(root);  
+    while (!q.empty())
+	{  
+        //出队，然后访问该数据  
+        int current = q.front();  
+        q.pop();
+  
+        cout<<binary[current].key+1;
+  
+        num++;  
+        if (num < totalNode)    cout<<" "; 
+ 
+        if (binary[current].left != -1)
+		{  
+            q.push(binary[current].left);//左子树入队  
+        }
+  
+        if (binary[current].right != -1)
+		{  
+            q.push(binary[current].right);//右子树入队  
+        }  
+    }  
+
+    return ;  
+}  
 
 
 int main()
@@ -90,53 +115,10 @@ int main()
 	}
 
 
-	build_tree(0, N-1, 0, N-1);
+	int root = build_tree(0, N-1, 0, N-1);
 
 
-// set parent for every node;
-	for(int i=0;i<N;i++)
-	{
-		int left = binary[i].left;
-		int right = binary[i].right;
-
-		if(left != -1)    binary[left].parent = i;
-		if(right != -1)    binary[right].parent = i;
-
-	}
-
-// find height of binary tree
-	int root = -1;
-	int height = 0;	
-	for(int i=0;i<N;i++)
-	{
-		int current_node = i;
-		int current_height = 0;
-		while(current_node != -1)
-		{
-			current_height++;
-			root = current_node;
-			current_node = binary[current_node].parent;
-		}
-
-		if(height<current_height)    height = current_height;
-	}
-
-
-// get level order for each level;
-	for(int i=1;i<=height;i++)
-	{
-		level_order(binary[root], i);
-	}
-
-	// output result of level order;
-	for(int i=0;i<level_sequence.size();i++)
-	{
-		cout<<level_sequence[i].key + 1;
-		if(i != level_sequence.size()-1)    cout<<" ";
-	}
-
-
-
+	level_order(root, N);
 
 	return 0;
 }
