@@ -5,9 +5,9 @@ using namespace std;
 
 struct Node
 {
+	int key;
 	int left;
-	int right;
-	int name;
+	int right;	
 	int parent;
 };
 
@@ -28,7 +28,7 @@ int build_tree(int inStart, int inEnd, int postStart, int postEnd)
 	int root = post_order[postEnd];
 
 	int k = 0;
-	for (int i = 0; i < in_order.size(); i++) 
+	for (int i = inStart; i <= inEnd; i++) 
 	{
 		if (in_order[i] == root) 
 		{
@@ -84,7 +84,7 @@ int main()
 	for(int i=0;i<N;i++)
 	{
 		Node temp;
-		temp.name = i;
+		temp.key = i;
 		temp.parent = -1;
 		binary.push_back(temp);
 	}
@@ -131,7 +131,7 @@ int main()
 	// output result of level order;
 	for(int i=0;i<level_sequence.size();i++)
 	{
-		cout<<level_sequence[i].name+1;
+		cout<<level_sequence[i].key + 1;
 		if(i != level_sequence.size()-1)    cout<<" ";
 	}
 
