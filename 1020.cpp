@@ -1,11 +1,10 @@
-#include<iostream>
-#include<queue>  
+#include<iostream>  
 #include<vector>  
 using namespace std;  
       
 struct Node
 {  
-    int data;  
+    int key;  
     Node* left;  
     Node* right;  
 };  
@@ -36,7 +35,7 @@ Node* build_tree(int postStart, int postEnd, int midStart, int midEnd)
     }  
     //中序队列中距离的起始位置的个数，即第i个位置为根结点，左边num个是它的左子树的个数  
     int numStart = i - midStart;  
-    root->data = post_order[postEnd];  
+    root->key = post_order[postEnd];  
     root->left = build_tree(postStart, postStart + numStart - 1, midStart , i - 1);   
     root->right = build_tree(postStart + numStart, postEnd - 1, i + 1, midEnd);  
     return root;  
@@ -47,24 +46,25 @@ Node* build_tree(int postStart, int postEnd, int midStart, int midEnd)
 //层次遍历二叉树  
 void level_order(Node * root,int totalNode)
 {  
-    int num = 0;  
     if (root == NULL)
 	{  
         return;  
     }  
-    queue<Node*> q;  
-    q.push(root);  
-    while (!q.empty())
-	{  
-        //出队，然后访问该数据  
-        Node * current = q.front();  
-        q.pop();  
 
-		result.push_back(current->data); 
-        num++;  
+	vector<Node*> q;  
+    q.push_back(root);  
+
+
+    while (!q.empty())
+	{
+		Node* current = q[0];
+		q.erase(q.begin());
+		
+		result.push_back(current->key); 
   
-        if (current->left != NULL)    q.push(current->left);//左子树入队    
-        if (current->right != NULL)   q.push(current->right);//右子树入队  
+        if (current->left != NULL)    q.push_back(current->left);//左子树入队    
+        if (current->right != NULL)   q.push_back(current->right);//右子树入队  
+
     }
 	  
     return ;  
