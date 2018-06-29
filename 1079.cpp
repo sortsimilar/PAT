@@ -10,6 +10,8 @@ struct Node
 
 	int height;	// distance between node and root;
 	int amount; // amount of product;
+	
+	double data;
 };
 
 
@@ -25,18 +27,13 @@ void tree_dfs(int current)
 
 	if(tree[current].amount != -1)
 	{
-		double result = tree[current].amount * P;
-		for(int i=0;i<tree[current].height;i++)
-		{
-			result = result * (1.0 + r/100.0);
-		}
-
-		sum += result;
+		sum += tree[current].data * tree[current].amount;
 	}
 
 	for(int i=0;i<tree[current].child.size();i++) // childs 存放指向其每個子結點的指標
 	{ 
 		tree[tree[current].child[i]].height = tree[current].height + 1;
+		tree[tree[current].child[i]].data = tree[current].data * (1.0 + r/100.0);
 		tree_dfs(tree[current].child[i]);   
     }
 
@@ -67,6 +64,10 @@ int main()
 		temp.amount = -1;
 		tree.push_back(temp);
 	}
+
+
+	tree[0].data = P;
+
 
 	for(int i=0;i<N;i++)
 	{
