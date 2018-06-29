@@ -6,26 +6,45 @@ using namespace std;
 struct Node
 {
 	int key;
-	int parent;
+	vector<int> child;
+
 	int height;	// distance between node and root;
 	int amount; // amount of product;
 };
 
 
+double P; // unit price given by the root supplier;
+double r; // percentage rate of price increment for each distributor or retailer;
+double sum = 0;	
 vector<Node> tree;
 
-int get_height(int index)
+
+void tree_dfs(int current)
 {
-	int height = 0;
-	int current = index;
-	while(current != -1)
+//	cout<<tree[current].key<<" "<<tree[current].height<<endl;
+
+	if(tree[current].amount != -1)
 	{
-		current = tree[current].parent;
-		height++;
+		double result = tree[current].amount * P;
+		for(int i=0;i<tree[current].height;i++)
+		{
+			result = result * (1.0 + r/100.0);
+		}
+
+		sum += result;
 	}
 
-	return height-1;
+	for(int i=0;i<tree[current].child.size();i++) // childs 存放指向其每個子結點的指標
+	{ 
+		tree[tree[current].child[i]].height = tree[current].height + 1;
+		tree_dfs(tree[current].child[i]);   
+    }
+
+	
 }
+
+
+
 
 
 
@@ -33,9 +52,9 @@ int main()
 {
 	int N; // total number of the members in the supply chain;
 	cin>>N;
-	double P; // unit price given by the root supplier;
+	
 	cin>>P;
-	double r; // percentage rate of price increment for each distributor or retailer;
+	
 	cin>>r;
 
 	// initialize tree node;
@@ -43,18 +62,11 @@ int main()
 	{
 		Node temp;
 		temp.key = i;
-		temp.parent = -1;
+
 		temp.height = 0;
 		temp.amount = -1;
 		tree.push_back(temp);
 	}
-
-/*
-	for(int i=0;i<N;i++)
-	{
-		cout<<tree[i].key<<" "<<tree[i].parent<<" "<<tree[i].height<<endl;
-	}	
-*/
 
 	for(int i=0;i<N;i++)
 	{
@@ -67,7 +79,7 @@ int main()
 			{
 				int temp_j;
 				cin>>temp_j;
-				tree[temp_j].parent = i;
+				tree[i].child.push_back(temp_j);
 			}
 		}
 		else
@@ -78,26 +90,8 @@ int main()
 		}
 	}
 
-	
 
-	double sum = 0;	
-	for(int i=0;i<N;i++)
-	{
-		if(tree[i].amount!=-1)
-		{
-			int height = get_height(i);
-			double result = tree[i].amount * P;
-			for(int j=0;j<height;j++)
-			{
-				result = result * (1.0 + r/100.0);
-			}
-
-			sum += result;
-			
-//			cout<<height<<" "<<tree[i].amount<<endl;
-//			cout<<sum<<endl;
-		}
-	}
+	tree_dfs(0);
 
 	printf("%.1f", sum);
 
