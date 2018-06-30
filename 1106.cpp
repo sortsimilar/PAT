@@ -6,49 +6,67 @@ using namespace std;
 struct Node
 {
 	int key;
-	int parent;
+	vector<int> child;
+
 	int height;	// distance between node and root;
-	bool leaf ; // test whether node is leaf;
+	bool leaf; // amount of product;
+	
+	double data;
 };
 
+
+double P; // unit price given by the root supplier;
+double r; // percentage rate of price increment for each distributor or retailer;
 vector<Node> tree;
 
-int get_height(int index)
+int min_level = 100001;
+double min_price;
+
+void tree_dfs(int current)
 {
-	int height = 0;
-	int current = index;
-	while(current != -1)
+//	cout<<tree[current].key<<" "<<tree[current].height<<endl;
+
+	if(tree[current].leaf == true)
 	{
-		current = tree[current].parent;
-		height++;
+		if(tree[current].height<min_level)
+		{
+			min_level = tree[current].height;
+			min_price = tree[current].data;
+		}
 	}
 
-	return height-1;
+	for(int i=0;i<tree[current].child.size();i++) // childs 存放指向其每個子結點的指標
+	{ 
+		tree[tree[current].child[i]].height = tree[current].height + 1;
+		tree[tree[current].child[i]].data = tree[current].data * (1.0 + r/100.0);
+		tree_dfs(tree[current].child[i]);   
+    }	
 }
-
-
 
 
 
 int main()
 {
-	int N; // total number of the members in the supply chain
+	int N; // total number of the members in the supply chain;
 	cin>>N;
-	double P; // price given by the root supplier;
+	
 	cin>>P;
-	double r; // percentage rate of price increment for each distributor or retailer;
+	
 	cin>>r;
 
-// initialize tree node;
+	// initialize tree node;
 	for(int i=0;i<N;i++)
 	{
 		Node temp;
 		temp.key = i;
-		temp.parent = -1;
+
 		temp.height = 0;
 		temp.leaf = false;
 		tree.push_back(temp);
 	}
+
+
+	tree[0].data = P;
 
 
 	for(int i=0;i<N;i++)
@@ -62,55 +80,55 @@ int main()
 			{
 				int temp_j;
 				cin>>temp_j;
-				tree[temp_j].parent = i;
+				tree[i].child.push_back(temp_j);
 			}
 		}
 		else
 		{
 			tree[i].leaf = true;
 		}
-
 	}
 
-	// calculate height for each leaf;
-	int min_height = N+1;
-	for(int i=0;i<N;i++)
-	{
-		if(tree[i].leaf==true)
-		{
-			tree[i].height = get_height(i);
-//			cout<<tree[i].height<<endl;
 
-			if(tree[i].height <= min_height)
-			{
-				min_height = tree[i].height;
-			}
-		}
-
-	}	
+	tree_dfs(0);
 
 
-//	cout<<min_height<<endl;
+
+
 	int counter = 0;
 	for(int i=0;i<N;i++)
 	{
-		if(tree[i].height==min_height)
+//		cout<<tree[i].height<<" "<<tree[i].data<<endl;
+		if((tree[i].height==min_level)&&(tree[i].leaf==true))
 		{
 			counter++;
 		}
 	}
 
-	double sum = P;
-	for(int i=0;i<counter;i++)
-	{
-		sum = sum * (1.0 + r/100.0);
-	}
-
-	printf("%.4f", sum);
+	
+	printf("%.4f", min_price);
 	cout<<" "<<counter;
+
+
 
 	return 0;
 }
 
+
+/*
+
+10 1.80 1.00
+3 2 3 5
+1 9
+1 4
+1 7
+0 7
+2 6 1
+1 8
+0 9
+0 4
+0 3
+
+*/
 
 
