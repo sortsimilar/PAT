@@ -64,7 +64,7 @@ int main()
 			{
 				noble.push_back(temp);
 			}
-			else if((temp.virtue<H)&&(temp.talent<H))
+			else if((temp.virtue<H)&&(temp.talent<H)&&(temp.virtue>=temp.talent))
 			{
 				fool.push_back(temp);
 			}
