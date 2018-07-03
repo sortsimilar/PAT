@@ -1,132 +1,75 @@
 #include<iostream>
-#include<sstream>
-#include<string.h>
 #include<stdio.h>
-#include<vector>
+#include<string.h>
+
 using namespace std;
 
-int test_string(string test) // test whether a string is legal or not;
+int main() 
 {
-	bool negative = false;
-	if(test[0] == '-')
+    int N;
+	cin >> N;
+
+	int	counter = 0;
+    char a[50];
+	char b[50];
+
+    double temp; 
+	double sum = 0.0;
+    
+    for(int i = 0; i < N; i++) 
 	{
-		negative = true;
-		test.erase(0, 1);
-	}
+        scanf("%s", a); // %s 读入一个字符串
 
-	if(test == "1000")    return -1;
-	if(test == "1000.0")    return -1;
-	if(test == "1000.00")    return -1;
+        sscanf(a, "%lf", &temp); // 从一个字符串中读进与指定格式相符的数据
+        sprintf(b, "%.2lf",temp); // sprintf与printf函数的区别：二者功能相似，但是sprintf函数打印到字符串中，而printf函数打印输出到屏幕上。
 
-	// check whether there is more minus;
-	for(int i=0;i<test.length();i++)
-	{
-		if(test[i] == '-')    return 1; // 1 means there is more than 1 minus;
-	}
-
-	// check whether there is non-digit;	
-	for(int i=0;i<test.length();i++)
-	{
-		if((isdigit(test[i]) == false) && (test[i] != '.'))    return 2; // 2 means there is non-digit;
-		break;
-	}
-
-	// check whether dot at the beginning;
-	if(test[0]=='.')    return 3; // 3 means dot at the beginning;
-
-	// check whether there is more than one dot;
-	int counter = 0;
-	for(int i=0;i<test.length();i++)
-	{
-		if(test[i] == '.')    counter++;
-	}
-	if(counter>1)    return 4; // 4 means there is more than one dot;
-
-	// check whether there are more than two precision;
-	counter = 0;
-	int position = -1;
-	for(int i=0;i<test.length();i++)
-	{
-		if(test[i] == '.')    
+        bool flag = true;
+        for(int j = 0; j < strlen(a); j++) 
 		{
-			position = i;
-			break;
-		}
-	}
-	if(test.length()-position-1 > 2)    return 5; // 5 means precision not correct;
-	if(position == test.length()-1)    return 6; // 6 means dot at the end;
-
-
-	// check whether number is beyond scope;
-	double number;
-	stringstream ss;
-	ss<<test;
-	ss>>number;
-	if(number > 1000)    return 7; // 7 means number is beyond scope;
-
-
-
-	return -1; // -1 means correct;
-
-}
-
-
-int main()
-{
-	int N;
-	cin>>N;
-
-	vector<string> sequence(N);
-	vector<bool> legal(N);
-	for(int i=0;i<N;i++)
-	{
-		cin>>sequence[i];
-	}
-
-//	cout<<test_string("5");	
-//	cout<<test_string("aaaa"); // check whether there exist non-digit;
-//	cout<<test_string("11.2.3"); // check whether there exist non-digit;	
-//	cout<<test_string("11.234"); // check whether there are more than two precision;
-
-	double sum = 0; int counter = 0;
-	for(int i=0;i<N;i++)
-	{
-		if(test_string(sequence[i]) != -1)
-		{
-			cout<<"ERROR: "<<sequence[i]<<" is not a legal number"<<endl;
-		}
-		else
-		{
-			counter++;
-			int signal = 1;
-			if(sequence[i][0]	== '-')
+            if(a[j] != b[j]) 
 			{
-				signal = -1;
-				sequence[i].erase(0, 1);
-			}		
+                flag = false;
+            }
+        }
 
-			double number;
-			stringstream st;
-			st<<sequence[i];
-			st>>number;
-			sum = sum + number*signal;
-		}
-	}
+        if(flag==false || temp < -1000 || temp > 1000) 
+		{
+            printf("ERROR: %s is not a legal number\n", a);
+        } 
+		else 
+		{
+            sum += temp;
+            counter++;
+        }
 
-	if(counter==0) cout<<"The average of 0 numbers is Undefined";
-	else if(counter == 1)
+    }
+
+    if(counter == 1) 
 	{
-		double average = sum;
+        double average = sum;
 		cout<<"The average of 1 number is ";
 		printf("%.2f", average);
-	}
-	else
+    } 
+	else if(counter > 1) 
 	{
 		double average = sum / counter;
-		cout<<"The average of "<<counter<<" numbers is ";
+        cout<<"The average of "<<counter<<" numbers is ";
 		printf("%.2f", average);
-	}
+    } 
+	else 
+	{		
+        cout<<"The average of 0 numbers is Undefined";
+    }
 
 
-	return 0;
+
+
+    return 0;
 }
+
+
+
+
+
+
+
