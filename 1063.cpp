@@ -6,7 +6,7 @@ using namespace std;
 
 struct number_set
 {
-	vector<int> store;
+	set<int> store;
 };
 
 
@@ -15,22 +15,26 @@ vector<double> result;
 int main()
 {
 	int N; // total number of sets;
-	cin>>N;
+//	cin>>N;
+	scanf("%d", &N);
 
 	vector<number_set> store_all;
+
 
 	for(int i=0;i<N;i++)
 	{
 		int M;
-		cin>>M;
+//		cin>>M;
+		scanf("%d", &M);
 
 		number_set temp;
 		for(int j=0;j<M;j++)
 		{
 			int number;
-			cin>>number;
+//			cin>>number;
+			scanf("%d", &number);
 
-			temp.store.push_back(number);
+			temp.store.insert(number);
 		}
 
 
@@ -50,60 +54,48 @@ int main()
 */
 
 	int K; // K lines of queries
-	cin>>K; 
+//	cin>>K; 
+	scanf("%d", &K);
+
+
 
 	for(int i=0;i<K;i++)
 	{
 		int first;
-		cin>>first;
+//		cin>>first;
+		scanf("%d", &first);
 		int second;
-		cin>>second;
-
+//		cin>>second;
+		scanf("%d", &second);
 		
-		set<int> NtSet;
-		int Nt = 0;
-
-		// calculate Nt;
-		for(int j=0;j<store_all[first-1].store.size();j++)
-		{
-			NtSet.insert(store_all[first-1].store[j]);
-		}
-
-		for(int j=0;j<store_all[second-1].store.size();j++)
-		{
-			NtSet.insert(store_all[second-1].store[j]);
-		}
-
-//		cout<<NtSet.size()<<endl;
+		
 
 		// calculate Nc;
-		int Nc = 0;
-		set<int> FirstSet;
-		set<int> SecondSet;
-		
-		for(int j=0;j<store_all[first-1].store.size();j++)
-		{
-			FirstSet.insert(store_all[first-1].store[j]);
-		}
+		int Nc = 0;		
+		int Nt = store_all[first-1].store.size();
 
-		for(int j=0;j<store_all[second-1].store.size();j++)
-		{
-			SecondSet.insert(store_all[second-1].store[j]);
-		}
 
-		for(set<int>::iterator it=SecondSet.begin() ;it!=SecondSet.end();it++)
+//		cout<<store_all[first-1].store.size()<<" ";
+//		cout<<store_all[second-1].store.size()<<endl;
+
+		for(set<int>::iterator it=store_all[second-1].store.begin() ;it!=store_all[second-1].store.end();it++)
 		{
-			if(FirstSet.find(*it) != FirstSet.end())
+			if(store_all[first-1].store.find(*it) != store_all[first-1].store.end()) // Find it !!!
 			{
 				Nc++;
 			}
-			
+			else
+			{
+				Nt++;
+			}
+		
 		}
 //		cout<<Nc<<endl;
 
-		double result_temp = double (Nc) / double (NtSet.size()) * 100.0;
+		double result_temp = double (Nc) / double (Nt) * 100.0;
 
 		result.push_back(result_temp);
+
 	}
 
 
