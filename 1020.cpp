@@ -43,7 +43,7 @@ Node* build_tree(int postStart, int postEnd, int inStart, int inEnd)
       
       
 //层次遍历二叉树  
-void level_order(Node * root,int totalNode)
+void level_order(Node * root)
 {  
     if (root == NULL)
 	{  
@@ -91,7 +91,7 @@ int main()
     //根据后序和中序序列建二叉树  
     Node* root = build_tree(0, N-1, 0, N-1);  
     //层次遍历二叉树  
-    level_order(root, N);  
+    level_order(root);  
 
 	for(int i=0;i<N;i++)
 	{
