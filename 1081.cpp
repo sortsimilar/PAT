@@ -8,10 +8,10 @@ using namespace std;
 
 struct Node
 {
-	int sign;
-	int integer;
-	int numerator;
-	int denominator;
+	long long int sign;
+	long long int integer;
+	long long int numerator;
+	long long int denominator;
 };
 
 vector<string> save;
@@ -19,11 +19,11 @@ vector<Node> sequence;
 
 Node yuefen(Node origin)
 {
-	int upper_bound = origin.numerator;
+	long long int upper_bound = origin.numerator;
 	if(origin.numerator<origin.denominator)    upper_bound = origin.denominator;
 
 
-	int i=2;
+	long long int i=2;
 	while(i<=sqrt(upper_bound))
 	{
 		if((origin.numerator%i==0)&&(origin.denominator%i==0))
@@ -74,11 +74,11 @@ Node daifen(Node a)
 int main()
 {
 
-	int N; // num of numbers;
+	long long int N; // num of numbers;
 	cin>>N;
 	
 	save.resize(N);
-	for(int i=0;i<N;i++)
+	for(long long int i=0;i<N;i++)
 	{
 		string s_temp;
 		cin>>s_temp;
@@ -101,7 +101,7 @@ int main()
 		string fenzi = "";
 		string fenmu = "";
 
-		for(int j=0;j<s_temp.length();j++)
+		for(long long int j=0;j<s_temp.length();j++)
 		{
 			if(s_temp[j]=='/')
 			{
@@ -173,7 +173,7 @@ int main()
 
 	Node result = sequence[0];
 
-	for(int i=1;i<sequence.size();i++)
+	for(long long int i=1;i<sequence.size();i++)
 	{
 		result = yuefen(tongfen(result, sequence[i]));
 	}
