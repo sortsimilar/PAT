@@ -3,7 +3,6 @@
 #include<sstream>
 #include<string>
 #include<vector>
-
 using namespace std;
 
 struct Node
@@ -17,59 +16,47 @@ struct Node
 vector<string> save;
 vector<Node> sequence;
 
-Node yuefen(Node origin)
+string int_to_string(int temp)
 {
-	long long int upper_bound = origin.numerator;
-	if(origin.numerator<origin.denominator)    upper_bound = origin.denominator;
-
-
-	long long int i=2;
-	while(i<=sqrt(upper_bound))
-	{
-		if((origin.numerator%i==0)&&(origin.denominator%i==0))
-		{
-			origin.numerator = origin.numerator / i;
-			origin.denominator = origin.denominator / i;
-		}
-		else
-		{
-			i++;
-		}
-	}
-
-
-	return origin;
-
-}
-
-
-Node daifen(Node a)
-{
-	Node result;
-	result.sign = a.sign;
-	result.integer = a.numerator / a.denominator;
-	result.numerator = a.numerator % a.denominator;
-	result.denominator = a.denominator;
+	string result;
+	stringstream ss;
+	ss<<temp;
+	ss>>result;
 
 	return result;
 }
 
 
-Node add(Node a, Node b)
+string node_to_string(Node temp)
 {
-	Node result;
-	result.numerator = a.numerator*b.denominator*a.sign + a.denominator*b.numerator*b.sign;
-	result.denominator = a.denominator * b.denominator;
+	string result = "";
 
-	if(result.numerator>=0)    result.sign = 1;
-	else    
+
+	if(temp.numerator==0)
 	{
-		result.sign = -1;
-		result.numerator = 0 - result.numerator;
+		result = int_to_string(temp.sign*temp.integer);
 	}
+	else // numerator != 0;
+	{
+		if(temp.integer!=0)
+		{
+			result += int_to_string(temp.sign*temp.integer); // integer part;
+
+			if(temp.denominator!=1)
+			{
+				result = result + " " + int_to_string(temp.numerator) + "/" + int_to_string(temp.denominator);
+			}
+		}
+		else // integer == 0;
+		{
+			result = int_to_string(temp.sign*temp.numerator) + "/" + int_to_string(temp.denominator);
+		}
+	}
+
 
 	return result;
 }
+
 
 Node string_to_node(string s)
 {
@@ -125,6 +112,63 @@ Node string_to_node(string s)
 }
 
 
+Node yuefen(Node origin)
+{
+	long long int upper_bound = origin.numerator;
+	if(origin.numerator<origin.denominator)    upper_bound = origin.denominator;
+
+
+	long long int i=2;
+	while(i<=sqrt(upper_bound))
+	{
+		if((origin.numerator%i==0)&&(origin.denominator%i==0))
+		{
+			origin.numerator = origin.numerator / i;
+			origin.denominator = origin.denominator / i;
+		}
+		else
+		{
+			i++;
+		}
+	}
+
+
+	return origin;
+
+}
+
+
+Node daifen(Node a)
+{
+	Node result;
+	result.sign = a.sign;
+	result.integer = a.numerator / a.denominator;
+	result.numerator = a.numerator % a.denominator;
+	result.denominator = a.denominator;
+
+	return result;
+}
+
+
+Node add(Node a, Node b)
+{
+	Node result;
+	result.numerator = a.numerator*b.denominator*a.sign + a.denominator*b.numerator*b.sign;
+	result.denominator = a.denominator * b.denominator;
+
+	if(result.numerator>=0)    result.sign = 1;
+	else    
+	{
+		result.sign = -1;
+		result.numerator = 0 - result.numerator;
+	}
+
+	return result;
+}
+
+
+
+
 int main()
 {
 
@@ -144,35 +188,11 @@ int main()
 
 	for(long long int i=1;i<sequence.size();i++)
 	{
-		result = yuefen(add(result, sequence[i]));
+		result = yuefen(add(result, sequence[i]));		
 	}
+	result = daifen(result);	
 
-	result = daifen(result);
-
-//	cout<<result.sign<<" "<<result.integer<<" "<<result.numerator<<" "<<result.denominator<<endl;
-
-
-	if(result.numerator==0)
-	{
-		cout<<result.sign*result.integer;
-	}
-	else // numerator != 0;
-	{
-		if(result.integer!=0)
-		{
-			cout<<result.sign*result.integer; // integer part;
-
-			if(result.denominator!=1)
-			{
-				cout<<" "<<result.numerator<<"/"<<result.denominator;
-			}
-		}
-		else // integer == 0;
-		{
-			cout<<result.sign*result.numerator<<"/"<<result.denominator;
-		}
-	}
-
+	cout<<node_to_string(result);
 
 	return 0;
 
