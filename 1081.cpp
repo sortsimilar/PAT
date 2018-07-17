@@ -43,7 +43,19 @@ Node yuefen(Node origin)
 }
 
 
-Node tongfen(Node a, Node b)
+Node daifen(Node a)
+{
+	Node result;
+	result.sign = a.sign;
+	result.integer = a.numerator / a.denominator;
+	result.numerator = a.numerator % a.denominator;
+	result.denominator = a.denominator;
+
+	return result;
+}
+
+
+Node add(Node a, Node b)
 {
 	Node result;
 	result.numerator = a.numerator*b.denominator*a.sign + a.denominator*b.numerator*b.sign;
@@ -59,17 +71,59 @@ Node tongfen(Node a, Node b)
 	return result;
 }
 
-
-Node daifen(Node a)
+Node string_to_node(string s)
 {
 	Node result;
-	result.sign = a.sign;
-	result.integer = a.numerator / a.denominator;
-	result.numerator = a.numerator % a.denominator;
-	result.denominator = a.denominator;
+
+	if(s[0]=='-')
+	{
+		result.sign = -1;
+		s.erase(0, 1);
+	}
+	else
+	{
+		result.sign = 1;
+	}
+
+	bool flag = false;
+	string fenzi = "";
+	string fenmu = "";
+
+	for(long long int j=0;j<s.length();j++)
+	{
+		if(s[j]=='/')
+		{
+			flag = true;
+		}
+		
+
+		if(flag==false)
+		{
+			fenzi = fenzi + s[j];
+		}
+
+		if(flag==true)
+		{
+			fenmu = fenmu + s[j];
+		}
+
+	}
+
+	fenmu.erase(0, 1);
+	
+//		cout<<fenzi<<" "<<fenmu<<endl;
+
+	stringstream ss;
+	ss<<fenzi;
+	ss>>result.numerator;
+
+	stringstream st;
+	st<<fenmu;
+	st>>result.denominator;
 
 	return result;
 }
+
 
 int main()
 {
@@ -81,101 +135,16 @@ int main()
 	for(long long int i=0;i<N;i++)
 	{
 		string s_temp;
-		cin>>s_temp;
+		cin>>s_temp;		
 
-		
-
-		Node temp;
-
-		if(s_temp[0]=='-')
-		{
-			temp.sign = -1;
-			s_temp.erase(0, 1);
-		}
-		else
-		{
-			temp.sign = 1;
-		}
-
-		bool flag = false;
-		string fenzi = "";
-		string fenmu = "";
-
-		for(long long int j=0;j<s_temp.length();j++)
-		{
-			if(s_temp[j]=='/')
-			{
-				flag = true;
-			}
-			
-
-			if(flag==false)
-			{
-				fenzi = fenzi + s_temp[j];
-			}
-
-			if(flag==true)
-			{
-				fenmu = fenmu + s_temp[j];
-			}
-
-		}
-
-		fenmu.erase(0, 1);
-		
-//		cout<<fenzi<<" "<<fenmu<<endl;
-
-		stringstream ss;
-		ss<<fenzi;
-		ss>>temp.numerator;
-
-		stringstream st;
-		st<<fenmu;
-		st>>temp.denominator;
-
-		sequence.push_back(temp);		
+		sequence.push_back(string_to_node(s_temp));		
 	}
-
-
-/*
-	for(int i=0;i<sequence.size();i++)
-	{
-		cout<<sequence[i].sign<<" "<<sequence[i].numerator<<" "<<sequence[i].denominator<<endl;
-	}
-*/
-
-/*
-	Node test;
-	test.sign = 1;
-	test.numerator = 72;
-	test.denominator = 108;
-*/
-//	Node result = yuefen(test);
-//	cout<<result.numerator<<" "<<result.denominator<<endl;
-
-/*
-	Node a;
-	a.sign = -1;
-	a.numerator = 1;
-	a.denominator = 2;
-
-	Node b;
-	b.sign = 1;
-	b.numerator = 1;
-	b.denominator = 4;
-
-	Node result = yuefen(tongfen(a, b));
-	
-
-	cout<<result.sign<<" "<<result.numerator<<" "<<result.denominator;
-*/
-
 
 	Node result = sequence[0];
 
 	for(long long int i=1;i<sequence.size();i++)
 	{
-		result = yuefen(tongfen(result, sequence[i]));
+		result = yuefen(add(result, sequence[i]));
 	}
 
 	result = daifen(result);
