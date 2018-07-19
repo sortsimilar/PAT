@@ -34,7 +34,6 @@ vector<Edge> store_edge;
 vector<int> adjacency_matrix;
 vector<int> dist;
 vector<bool> sptSet;
-vector<int> previous;
 vector<PreviousNode> previous_list;
 vector<OnePath> paths; 
 map<string, int> string_to_id;
@@ -149,9 +148,7 @@ int main()
 
 	dist.resize(num_v);
 	sptSet.resize(num_v);
-	previous.resize(num_v);
 	previous_list.resize(num_v);
-
 
 	int K; // total number of routes between pairs of cities;
 	cin>>K;
