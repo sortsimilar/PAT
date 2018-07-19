@@ -74,7 +74,6 @@ void dijkstra(int src)
 	{
         dist[i] = INT_MAX;
 		sptSet[i] = false;
-		previous[i] = -1;
 
 		previous_list[i].next = -1;
 	}
@@ -95,7 +94,6 @@ void dijkstra(int src)
 				if(dist[u]+get_weight(u, v)<dist[v])
 				{
 					dist[v] = dist[u] + get_weight(u, v);
-					previous[v] = u;
 					
 					previous_list[v].previous_member.clear();
 					previous_list[v].previous_member.push_back(u);
