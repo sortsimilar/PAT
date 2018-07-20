@@ -71,9 +71,10 @@ void dijkstra(int src)
 {          
 	for (int i=0;i<num_v;i++)
 	{
-        dist[i] = INT_MAX;
+		dist[i] = INT_MAX;
 		sptSet[i] = false;
 
+		previous_list[i].key = i;
 		previous_list[i].next = -1;
 	}
   	
@@ -85,9 +86,7 @@ void dijkstra(int src)
 		sptSet[u] = true; // Mark the picked vertex as processed
 
 		for (int v=0;v<num_v;v++)
-		{
-			previous_list[v].key = v;
-
+		{			
 			if (!sptSet[v] && get_weight(u, v) && dist[u]!=INT_MAX)
 			{
 				if(dist[u]+get_weight(u, v)<dist[v])
@@ -204,8 +203,8 @@ int main()
 
 	dijkstra(string_to_id["ROM"]);
 
-
 	tree_dfs(string_to_id[name_start]);
+
 
 	for(int i=0;i<paths.size();i++)
 	{
@@ -217,11 +216,8 @@ int main()
 		}
 		
 		paths[i].average = paths[i].happy_amount / (paths[i].path_member.size()-1);
-
-//		cout<<paths[i].average<<endl;
 	}
 
-//	cout<<endl<<dist[string_to_id[name_start]]<<endl;
 
 	sort(paths.begin(), paths.end(), compare);
 
