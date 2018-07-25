@@ -1,7 +1,6 @@
 #include<algorithm>
-#include<iostream>
+#include<stdio.h>
 #include<vector>
-
 using namespace std;
 
 vector<int> coupons;
@@ -16,21 +15,25 @@ bool compare(int a, int b)
 int main()
 {
 	int NC; // number of coupons NC;
-	cin>>NC;
+	scanf("%d", &NC);;
 
 	coupons.resize(NC);
 	for(int i=0;i<NC;i++)
 	{
-		cin>>coupons[i];
+		int temp;
+		scanf("%d", &temp);
+		coupons[i] = temp;
 	}
 
 	int NP; // num of product;
-	cin>>NP;
+	scanf("%d", &NP);
 
 	products.resize(NP);
 	for(int i=0;i<NP;i++)
 	{
-		cin>>products[i];
+		int temp;
+		scanf("%d", &temp);
+		products[i] = temp;
 	}
 
 	sort(coupons.begin(), coupons.end(), compare);
@@ -58,7 +61,7 @@ int main()
 		p--;
 	}
 
-	cout<<max_amount;
+	printf("%d", max_amount);
 
 	return 0;
 }
