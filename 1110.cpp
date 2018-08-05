@@ -1,6 +1,8 @@
 // level order of binary tree;
 
 #include<iostream>
+#include<sstream>
+#include<string>
 #include<vector>
 using namespace std;
 
@@ -15,9 +17,19 @@ struct Node
 };
 
 
-
 vector<Node> binary;
 vector<Node> level_sequence;
+
+
+int string_to_int(string temp)
+{
+	int result;
+	stringstream ss;
+	ss<<temp;
+	ss>>result;
+
+	return result;
+}
 
 
 // print level
@@ -47,13 +59,13 @@ int main()
 	{
 		Node temp;
 		temp.name = i;
-		char left; 
-		char right;
+		string left; 
+		string right;
 		cin>>left;
 		cin>>right;		
-		if(left != '-')    temp.left = left - '0';
+		if(left != "-")    temp.left = string_to_int(left);
 		else    temp.left = -1;
-		if(right != '-')    temp.right = right - '0';
+		if(right != "-")    temp.right = string_to_int(right);
 		else    temp.right = -1;
 
 		temp.parent = -1;
