@@ -30,8 +30,6 @@ void trans_func(string s)
 }
 
 
-
-
 bool test_alpha(char c)
 {
 	if((c>='0')&&(c<='9'))    return true;
@@ -40,63 +38,60 @@ bool test_alpha(char c)
 	else    return false;
 }
 
-string cut_word(string s)
-{
-	string result = "";
-
-	int start = 0;
-
-	for(int i=0;i<s.length();i++)
-	{
-		if(test_alpha(s[i])==true)
-		{
-			start = i;
-			break;
-		}		
-	}
-
-	for(int i=start;i<s.length();i++)
-	{
-		if(test_alpha(s[i])==false)
-		{
-			break;
-		}
-		else
-		{
-			if((s[i]>='A')&&(s[i]<='Z'))    s[i] = s[i] - 'A' + 'a'; // change all letter to lower case;
-
-			result = result + s[i];
-		}
-	}
-
-
-	return result;
-}
-
 
 bool compare(Node a, Node b)
 {
-	if(a.freq!=b.freq)    return a.freq>b.freq;
-	else    return a.word<b.word;
+	if(a.freq!=b.freq)    return a.freq > b.freq;
+	else    return a.word < b.word;
 }
 
 
 int main()
 {
+	string s = "";
+	getline(cin, s);
 
+	string temp = "";
+	for(int i=0;i<s.length();i++)
+	{		
+		if(test_alpha(s[i])==true)
+		{
+			if((s[i]>='A')&&(s[i]<='Z'))
+			{
+				s[i] = s[i] - 'A' + 'a';
+			}
 
-	char c;
-    string d;
-    while((c=cin.get())!='\n')
-    {
-        cin.unget();
-        cin>>d;
-		save.push_back(cut_word(d));
-    } 
+			temp = temp + s[i];
+
+			if(i==s.length()-1)
+			{
+				save.push_back(temp);
+			}
+		}
+		else // == false;
+		{			
+			if(i>0)
+			{
+				if(test_alpha(s[i-1])==true)
+				{
+					save.push_back(temp);
+					temp = "";
+				}
+			}
+		}
+	}
+
+/*
+	for(int i=0;i<save.size();i++)
+	{
+		cout<<save[i]<<endl;
+	}
+
+*/
+
 
 	for(int i=0;i<save.size();i++)
 	{
-//		cout<<save[i]<<" ";
 		trans_func(save[i]);
 	}
 
@@ -120,6 +115,8 @@ int main()
 	sort(result.begin(), result.end(), compare);
 
 	cout<<result[0].word<<" "<<result[0].freq;
+
+
 
 	return 0;
 }
