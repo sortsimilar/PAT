@@ -1,22 +1,35 @@
-#include<algorithm>
 #include<iostream>
+#include<set>
 #include<vector>
 using namespace std;
 
 struct Node // Node in hash table;
 {
-	int name;
+	int key;
 	int freq;
+
+	bool operator < (const Node &a) const
+	{	
+		if(freq != a.freq)    return freq > a.freq;
+		else
+		{
+			return key < a.key;
+		}
+    }
 };
+
+
 
 vector<int> access;
 vector<Node> hash_table;
+set<Node> freq_set;
+vector<int> frequence(50001, 0);
 
 
 bool compare(Node first, Node second)
 {
 	if(first.freq != second.freq)    return first.freq > second.freq;
-	else    return first.name < second.name;
+	else    return first.key < second.key;
 
 }
 
@@ -30,73 +43,53 @@ int main()
 	int K; // max of recommendation;
 	cin>>K;
 
+	access.resize(N);
 	for(int i=0;i<N;i++)	
 	{
-		int temp;
-		cin>>temp;
-		access.push_back(temp);
+		cin>>access[i];
 	}
-
-	// create hash table;
-	for(int i=0;i<N;i++)
-	{
-		Node temp;
-		temp.name = i + 1;
-		temp.freq = 0;
-
-		hash_table.push_back(temp);		
-	}
-	
-//	for(int i=0;i<N;i++)    cout<<hash_table[i].name<<" ";
 	
 	// calculate freq for each input;
 	for(int i=0;i<N;i++)
 	{
+
+		set<Node>::iterator it;
+
+		if(i>=1)
+		{
+			cout<<access[i]<<": ";
+					
+			int counter = 0;
+	
+			for(it=freq_set.begin() ;it!=freq_set.end();it++)
+			{
+				if(counter!=0)    cout<<" ";				
+				cout<<it->key+1;		
+
+				counter++;
+				if(counter>=K)    break;
+			}
+		}
+
+		int temp = access[i] - 1;
+		Node current;
+		current.key = temp;
+		current.freq = frequence[temp];
+
 		
-		vector<Node> hash_sorted(N);
-		for(int j=0;j<N;j++)
+		it = freq_set.find(current);
+		if(it != freq_set.end())
 		{
-			hash_sorted[j] = hash_table[j];
+			freq_set.erase(it);
 		}
 
-		sort(hash_sorted.begin(), hash_sorted.end(), compare);
-
-
-		if(i>=K)
-		{
-			cout<<access[i]<<": ";
-			for(int j=0;j<K;j++)
-			{
-				cout<<hash_sorted[j].name;
-				if(j != K-1)    cout<<" ";
-			}
-		}
-		else if((i>=1)&&(i<K))
-		{
-			cout<<access[i]<<": ";
-			for(int j=0;j<i;j++)
-			{
-				cout<<hash_sorted[j].name;
-				if(j != i-1)    cout<<" ";
-			}
-		}		
-
-
-
+		frequence[temp]++;
+		current.freq++;
+		freq_set.insert(current);
 
 		if((i != N-1)&&(i>=1))    cout<<endl;
 
-		int temp = access[i] - 1;
-		(hash_table[temp].freq)++;
-
-
 	}
-
-
-	
-
-
-
 
 
 	return 0;
