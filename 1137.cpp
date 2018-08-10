@@ -1,5 +1,6 @@
 #include<algorithm>
 #include<iostream>
+#include<map>
 #include<string>
 #include<vector>
 using namespace std;
@@ -7,29 +8,24 @@ using namespace std;
 struct Student
 {
 	string id;
-	int on_line;
+	int online;
 	int mid_exam;
 	int final_exam;
 	int total;
-	bool qualify;
 };
 
-vector<Student> sequence;
 
-int locate_id(string name)
+struct Node
 {
-	int position = -1;
-	for (int i = 0;i < sequence.size();i++)
-	{
-		if (sequence[i].id == name)
-		{
-			position = i;
-			break;
-		}
-	}
+	int online;
+	int mid_exam;
+	int final_exam;
+	int total;
+};
 
-	return position;
-}
+
+map<string, Node> map_student;
+
 
 bool compare(Student first, Student second)
 {
@@ -50,91 +46,106 @@ int main()
 	// add on-line score;
 	for (int i = 0;i < P;i++)
 	{
-		Student temp;
-		cin >> temp.id;
-		cin >> temp.on_line;
-		temp.mid_exam = -1;
-		temp.final_exam = -1;
+		string id;
+		cin>>id;
 
-		sequence.push_back(temp);
+		int online;
+		cin >> online;
 
+		map<string, Node>::iterator it;
+		it = map_student.find(id);
+
+		if(it == map_student.end())
+		{
+			map_student[id].online = online;
+			map_student[id].mid_exam = -1;
+			map_student[id].final_exam = -1;
+		}
 	}
 
 	// add mid-exam score;
 	for (int i = 0;i < M;i++)
 	{
-		Student temp;
-		cin >> temp.id;
-		cin >> temp.mid_exam;
+		string id;
+		cin>>id;
+		int mid_exam;
+		cin>>mid_exam;
 
-		if (locate_id(temp.id) == -1) // there is no on-line score;
+		map<string, Node>::iterator it;
+		it = map_student.find(id);
+
+		if(it == map_student.end()) // not find;
 		{
-			temp.on_line = -1;
-			temp.final_exam = -1;
-			sequence.push_back(temp);
+			map_student[id].online = -1;
+			map_student[id].mid_exam = mid_exam;
+			map_student[id].final_exam = -1;
 		}
-		else // there is on-line score;
+		else // find;
 		{
-			temp.final_exam = -1;
-			sequence[locate_id(temp.id)].mid_exam = temp.mid_exam;
+			map_student[id].mid_exam = mid_exam;
+			map_student[id].final_exam = -1;
 		}
 	}
 
 	// add final-exam score;
 	for (int i = 0;i < N;i++)
 	{
-		Student temp;
-		cin >> temp.id;
-		cin >> temp.final_exam;
+		string id;
+		cin>>id;
+		int final_exam;
+		cin>>final_exam;
 
-		if (locate_id(temp.id) == -1) // there is no student;
+		map<string, Node>::iterator it;
+		it = map_student.find(id);
+
+		if(it == map_student.end())
 		{
-			temp.on_line = -1;
-			temp.mid_exam = -1;
-			sequence.push_back(temp);
+			map_student[id].online = -1;
+			map_student[id].mid_exam = -1;
+			map_student[id].final_exam = final_exam;
 		}
 		else
 		{
-			sequence[locate_id(temp.id)].final_exam = temp.final_exam;
+			map_student[id].final_exam = final_exam;
 		}
 	}
 
-	/*
-	for (int i = 0;i < sequence.size();i++)
-	{
-		cout << sequence[i].id << " " << sequence[i].on_line << " " << sequence[i].mid_exam << " " << sequence[i].final_exam;
-		cout << endl;
-	}
-	*/
-
+	
 	// calculate total score for each student;
-	for (int i = 0;i < sequence.size();i++)
+	map<string, Node>::iterator it;
+	for(it=map_student.begin();it!=map_student.end();it++)
 	{
-		if (sequence[i].mid_exam > sequence[i].final_exam)
+		if(it->second.mid_exam > it->second.final_exam)
 		{
-			int result = int (sequence[i].mid_exam*0.4 + sequence[i].final_exam*0.6 + 0.5);
-			sequence[i].total = result;
+			int result = int (it->second.mid_exam*0.4 + it->second.final_exam*0.6 + 0.5);
+			it->second.total = result;
 		}
-		else    sequence[i].total = sequence[i].final_exam;
+		else    it->second.total = it->second.final_exam;
 	}
 
 
 	vector<Student> qualified;
-	for (int i = 0;i < sequence.size();i++)
+	for(it=map_student.begin();it!=map_student.end();it++)
 	{
-		if ((sequence[i].on_line >= 200) && (sequence[i].total >= 60))
+		if((it->second.online>=200) && (it->second.total>=60))
 		{
-			sequence[i].qualify = true;
-			qualified.push_back(sequence[i]);
+			Student temp;
+			temp.id = it->first;
+			temp.online = it->second.online;
+			temp.mid_exam = it->second.mid_exam;
+			temp.final_exam = it->second.final_exam;
+			temp.total = it->second.total;
+
+			qualified.push_back(temp);
 		}
-		else    sequence[i].qualify = false;
+
 	}
 
 	sort(qualified.begin(), qualified.end(), compare);
 
 	for (int i = 0;i < qualified.size();i++)
 	{
-		cout << qualified[i].id << " " << qualified[i].on_line << " ";
+		cout << qualified[i].id << " " << qualified[i].online << " ";
 		cout << qualified[i].mid_exam << " " << qualified[i].final_exam << " ";
 		cout << qualified[i].total;
 
@@ -142,6 +153,17 @@ int main()
 	}
 
 
-	system("pause");
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
