@@ -1,10 +1,10 @@
+#include<cstdio>
 #include<iostream>
-#include<sstream>
-#include<string>
 #include<vector>
 using namespace std;
 
-struct Node{
+struct Node
+{
 	int location;
 	int prev;
 	int addr;
@@ -45,29 +45,22 @@ void set_location(int head)
 	}
 }
 
-string int_to_string(int addr)
-{
-	string result;
-	stringstream ss;
-	ss<<addr;
-	ss>>result;
-
-
-	if(result != "-1")
-	{
-		while(result.length() < 5)    result = "0" + result;
-	}
-
-	return result;
-}
 
 void print_list(int head)
 {
 	int	current = head;
 	while(current != -1)
 	{	
-		cout<<int_to_string(linklist[current].addr)<<" "<<linklist[current].key<<" "<<int_to_string(linklist[current].next);
-		if(linklist[current].next != -1)    cout<<endl;
+		printf("%05d %d ", linklist[current].addr, linklist[current].key);
+		
+		if(linklist[current].next != -1)
+		{
+			printf("%05d\n", linklist[current].next);
+		}
+		else
+		{
+			printf("-1");
+		}
 
 		current = linklist[current].next;
 	}
@@ -220,9 +213,6 @@ int main()
 	// try to print linklist;
 //	cout<<endl;
 	print_list(head);
-
-	// try to move linklist element forward;
-//	cout<<endl;	
 
 
 	return 0;
