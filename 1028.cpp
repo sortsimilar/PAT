@@ -1,5 +1,6 @@
 #include<algorithm>
 #include<iostream>
+#include<sstream>
 #include<stdio.h>
 #include<string>
 #include<string.h>
@@ -8,7 +9,7 @@ using namespace std;
 
 struct Student
 {
-	char ID[10];
+	int ID;
 	char name[10];
 	int grade;
 };
@@ -17,8 +18,7 @@ struct Student
 // C = 1;
 bool compare_ID(Student first, Student second)
 {
-//	return first.ID < second.ID;
-	return strcmp(first.ID, second.ID)<0;
+	return first.ID < second.ID;
 }
 
 
@@ -26,14 +26,14 @@ bool compare_ID(Student first, Student second)
 bool compare_name(Student first, Student second)
 {
 	if(strcmp(first.name, second.name) != 0)    return strcmp(first.name, second.name) < 0;
-	else    return strcmp(first.ID, second.ID) < 0;
+	else    return first.ID < second.ID;
 }
 
 // C = 3;
 bool compare_grade(Student first, Student second)
 {
 	if(first.grade != second.grade)    return first.grade < second.grade;
-	else    return strcmp(first.ID, second.ID) < 0;
+	else    return first.ID < second.ID;
 }
 
 
@@ -46,9 +46,7 @@ int main()
 
 	for(int i=0;i<N;i++)
 	{
-	//	cin>>sequence[i].ID;
-		scanf("%s", sequence[i].ID);
-	//	cin>>sequence[i].name;
+		cin>>sequence[i].ID;
 		scanf("%s",sequence[i].name);
 		cin>>sequence[i].grade;
 	}
@@ -61,7 +59,7 @@ int main()
 
 	for(int i=0;i<N;i++)
 	{
-		printf("%s", sequence[i].ID);
+		printf("%06d", sequence[i].ID);
 		cout<<" ";
 		printf("%s", sequence[i].name);
 		cout<<" "<<sequence[i].grade;
@@ -74,3 +72,8 @@ int main()
 
 	return 0;
 }
+
+
+
+
+
