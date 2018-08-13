@@ -19,43 +19,31 @@ Polynomial add_polynomial(Polynomial first, Polynomial second)
 	int first_index = 0;
 	int second_index = 0;
 
-	first.exponent.push_back(-1);
-	second.exponent.push_back(-1);
-
-	while (1)
+	while (first_index < first.num || (second_index < second.num))
 	{
-		if ((first.exponent[first_index] == -1) && (second.exponent[second_index] == -1))
+		if ((first.exponent[first_index] < second.exponent[second_index]) || first_index==first.num)
 		{
-			break;
+			output.exponent.push_back(second.exponent[second_index]);
+			output.coefficient.push_back(second.coefficient[second_index]);
+			second_index++;
+		}
+		else if ((first.exponent[first_index] > second.exponent[second_index]) || second_index==second.num)
+		{
+			output.exponent.push_back(first.exponent[first_index]);
+			output.coefficient.push_back(first.coefficient[first_index]);
+			first_index++;
 		}
 		else
 		{
-			if (first.exponent[first_index] < second.exponent[second_index])
-			{
-				output.exponent.push_back(second.exponent[second_index]);
-				output.coefficient.push_back(second.coefficient[second_index]);
-				second_index++;
-			}
-			else if (first.exponent[first_index] > second.exponent[second_index])
+			float sum = first.coefficient[first_index] + second.coefficient[second_index];
+			if (sum != 0)
 			{
 				output.exponent.push_back(first.exponent[first_index]);
-				output.coefficient.push_back(first.coefficient[first_index]);
-				first_index++;
+				output.coefficient.push_back(sum);
 			}
-			else
-			{
-				float sum = first.coefficient[first_index] + second.coefficient[second_index];
-				if (sum != 0)
-				{
-					output.exponent.push_back(first.exponent[first_index]);
-					output.coefficient.push_back(sum);
-				}
-				first_index++;
-				second_index++;
-			}
-
+			first_index++;
+			second_index++;
 		}
-
 	}
 
 	return output;
@@ -66,28 +54,23 @@ int main()
 {
 	Polynomial first, second, output;
 
-	cin >> first.num;
-
+	cin>>first.num;
+	first.exponent.resize(first.num);
+	first.coefficient.resize(first.num);
 	for (int i = 0;i < first.num;i++)
 	{
-		int temp_exponent;
-		cin >> temp_exponent;
-		first.exponent.push_back(temp_exponent);
-		float temp_coefficient;
-		cin >> temp_coefficient;
-		first.coefficient.push_back(temp_coefficient);
+		cin>>first.exponent[i];
+		cin>>first.coefficient[i];
 	}
-	
-	cin >> second.num;
 
+	
+	cin>>second.num;
+	second.exponent.resize(second.num);
+	second.coefficient.resize(second.num);
 	for (int i = 0;i < second.num;i++)
 	{
-		int temp_exponent;
-		cin >> temp_exponent;
-		second.exponent.push_back(temp_exponent);
-		float temp_coefficient;
-		cin >> temp_coefficient;
-		second.coefficient.push_back(temp_coefficient);
+		cin>>second.exponent[i];
+		cin>>second.coefficient[i];
 	}
 
 
@@ -107,3 +90,9 @@ int main()
 
 	return 0;
 }
+
+
+
+
+
+
