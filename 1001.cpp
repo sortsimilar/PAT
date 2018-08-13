@@ -1,9 +1,18 @@
 #include<iostream>
-
+#include<sstream>
+#include<string>
 using namespace std;
 
 
-// -1,000,000 <= a, b <= 1000000
+string int_to_string(int num)
+{
+	string result;
+	stringstream ss;
+	ss<<num;
+	ss>>result;
+
+	return result;
+}
 
 
 int main()
@@ -23,65 +32,26 @@ int main()
 		cout<<"-";
 	}
 
-	int right = abs % 1000;
-	int middle = (int (abs /1000)) % 1000;
-	int left = (int (abs /1000000)) % 1000;
+	string s = int_to_string(abs);
 
+//	cout<<s;
 
-	if(left==0 && middle==0)
+	string result = "";
+	int counter = 0;
+	for(int i=s.length()-1;i>=0;i--)
 	{
-		cout<<right<<endl;
-	}
-	else if(left ==0 && middle !=0)
-	{
-		cout<<middle<<",";
-		if(right <= 9)
+		if((counter % 3 !=0) || counter==0)    result = s[i] + result;
+		else  
 		{
-			cout<<"00"<<right;
+			result = "," + result;
+			result = s[i] + result;
 		}
-		else if(right>=10 && right<=99)
-		{
-			cout<<"0"<<right;
-		}
-		else
-		{
-			cout<<right;
-		}
-		cout<<endl;
-	}
-	else
-	{
-		cout<<left<<",";
-		if(middle <= 9)
-		{
-			cout<<"00"<<middle;
-		}
-		else if(middle>=10 && middle<=99)
-		{
-			cout<<"0"<<middle;
-		}
-		else
-		{
-			cout<<middle;
-		}
-		cout<<",";
 
-		if(right <= 9)
-		{
-			cout<<"00"<<right;
-		}
-		else if(right>=10 && right<=99)
-		{
-			cout<<"0"<<right;
-		}
-		else
-		{
-			cout<<right;
-		}
-		cout<<endl;
+		counter++;
 	}
 
+	cout<<result;
 
-//	system("pause");
+	
 	return 0;
 }
