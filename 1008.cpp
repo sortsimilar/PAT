@@ -1,14 +1,15 @@
 #include<iostream>
-#include<stdio.h>
+#include<vector>
 using namespace std;
 
 int main()
 {
 	int number;
-	int stop[100];
-
 	cin>>number;
-	for(int i=0;i<number;i++)
+
+	vector<int> stop;
+	stop.resize(number);
+	for(int i=0;i<stop.size();i++)
 	{
 		cin>>stop[i];
 	}
