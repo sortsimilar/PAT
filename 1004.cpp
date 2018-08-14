@@ -1,113 +1,115 @@
 #include<iostream>
-#include<stdio.h>
+#include<map>
 #include<vector>
 using namespace std;
 
-int tree[100][100];
 
-int find_parent(int id)
+struct Node
 {
-	int parent = -1;
-	for (int i = 0;i < 100;i++)
+	int key;
+	int level;
+	vector<int> child;
+};
+
+
+vector<Node> tree;
+vector<Node> result;
+
+
+void tree_bfs(int root)
+{  
+    if (root == -1)
+	{  
+        return;  
+    }  
+
+	vector<int> q;  
+    q.push_back(root);  
+
+
+    while (!q.empty())
 	{
-		if (tree[i][id - 1] == 1)
+		int current = q[0];
+		q.erase(q.begin());
+		
+		result.push_back(tree[current]); 
+
+		if(tree[current].child.size()>0)
 		{
-			parent = i + 1;
-			break;
+			for(int i=0;i<tree[current].child.size();i++)
+			{
+				q.push_back(tree[current].child[i]);
+				tree[tree[current].child[i]].level = tree[current].level + 1;
+			}
 		}
-	}
 
-	return parent;
-}
+    }
+	  
+	return;  
+} 
 
-int calculate_distance(int id)
-{
-	int distance = 0;
-	int current_id = id;
-	while (find_parent(current_id) != -1)
-	{
-		distance++;
-		current_id = find_parent(current_id);
-	}
 
-	return distance;
-}
 
 int main()
 {
-	int child_num[100];
-	int distance[100]; // distance from current node to root;
+	int N;
+	cin>>N;
+	int M;
+	cin>>M;
 
-	for (int i = 0;i < 100;i++)
+
+	tree.resize(102);
+	for(int i=0;i<tree.size();i++)
 	{
-		child_num[i] = 0;
-		distance[i] = -1;
+		tree[i].key = i;
+		tree[i].level = 0;
 	}
 
-
-	int N; // num of nodes;
-	cin >> N;
-	int M; // num of non-leaf nodes;
-	cin >> M;
-
-	for (int i = 0;i < M;i++)
+	for(int i=0;i<M;i++)
 	{
-		int id; // current id of node;
-		cin >> id;
-		int num_child;
-		cin >> num_child;
+		int ID;
+		cin>>ID;
 
-		child_num[id - 1] = num_child;
-		for (int j = 0;j < num_child;j++)
+		int K;
+		cin>>K;
+
+		tree[ID].child.resize(K);
+		for(int j=0;j<K;j++)
 		{
-			int child_id;
-			cin >> child_id;
-			tree[id - 1][child_id - 1] = 1;
+			cin>>tree[ID].child[j];
 		}
-
 	}
 
-//	cout << find_parent(1);
-//	cout << calculate_distance(1);
-	int max_distance = 0;
-	for (int i = 0;i < N;i++)
-	{
-		distance[i] = calculate_distance(i+1);
-		if (distance[i] > max_distance) max_distance = distance[i];
-	}
-//	cout << distance[6];
-//	cout << max_distance;
+	tree_bfs(1);
 
-	for (int i = 0;i <= max_distance;i++)
+	int max_level = result[result.size()-1].level;
+
+	vector<int> hash_table(max_level+1, 0);
+
+
+	for(int i=0;i<result.size();i++)
 	{
-		int counter = 0;
-		for (int j = 0;j < 100;j++)
+//		cout<<result[i].key<<" "<<result[i].level<<endl;
+
+		if(tree[result[i].key].child.size()==0)
 		{
-			if (distance[j] == i)
-			{
-				if (child_num[j] == 0)
-				{
-					counter++;
-				}
-			}
-		}
-		cout << counter;
-		if (i < max_distance) cout << " ";
+			hash_table[result[i].level]++;
+		}	
 	}
+
+	for(int i=0;i<max_level+1;i++)
+	{
+		cout<<hash_table[i];
+		if(i!=max_level)    cout<<" ";
+	}
+
 
 	return 0;
 }
-/*  case 1;
-2 1
-01 1 02
-*/
-/*  case 2;
-3 1
-01 2 02 03
-*/
-/*  case 3;
-7 3
-01 2 02 03
-02 2 04 05
-03 2 06 07
-*/
+
+
+
+
+
+
+
