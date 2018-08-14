@@ -1,4 +1,5 @@
 #include<iostream>
+#include<stdio.h>
 using namespace std;
 
 int main()
@@ -53,6 +54,8 @@ int main()
 	cout<<first_type<<" "<<second_type<<" "<<third_type<<" ";
 	printf("%.2f", result);
 
-	system("pause");
 	return 0;
 }
+
+
+
