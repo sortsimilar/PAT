@@ -1,5 +1,4 @@
 #include<iostream>
-#include<stdio.h>
 #include<string>
 #include<sstream>
 
@@ -20,7 +19,8 @@ int main()
 
 	stringstream ss;
 	ss<<sum;
-	string target = ss.str();
+	string target;
+	ss>>target;
 
 
 	for(int i=0;i<target.length();i++)
