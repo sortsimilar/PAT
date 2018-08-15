@@ -1,4 +1,4 @@
-#include<iostream>
+#include<cstdio>
 #include<vector>
 using namespace std;
 
@@ -11,7 +11,6 @@ struct Edge
 
 
 int num_v; // number of vertices
-vector<Edge> store_edge;
 vector<int> query;
 vector<bool> adjacency_matrix;
 vector<bool> original;
@@ -46,7 +45,7 @@ void DFS(int i)
 }
 
 // DFS all map;
-void DFSTraverse()
+void DFSTraverse(int lost_city)
 {
 	// initialize visited matrix;
 	for(int i=1;i<=num_v;i++)
@@ -54,6 +53,7 @@ void DFSTraverse()
 		visited[i-1] = false;
 	}
 
+	visited[lost_city-1] = true;
 
 	for(int i=1;i<=num_v;i++)
 	{
@@ -71,21 +71,12 @@ void DFSTraverse()
 int main()
 {
 	int N; // num of cities;
-	cin>>N;
-	num_v = N;
 	int M; // num of remaining highway;
-	cin>>M;
 	int K; // num to be checked;
-	cin>>K;
+	scanf("%d%d%d", &N, &M, &K);
 
 
-	store_edge.resize(M);
-	for(int i=0;i<M;i++)
-	{
-		cin>>store_edge[i].start;
-		cin>>store_edge[i].end;
-	}
-
+	num_v = N;
 	// create adjacency matrix;
 	original.resize(num_v*num_v);
 	for(int i=0;i<num_v*num_v;i++)
@@ -93,15 +84,21 @@ int main()
 		original[i] = false;
 	}
 
-	// save current amp in adjacency matrix;
+
 	for(int i=0;i<M;i++)
 	{
-		int start = store_edge[i].start - 1;
-		int end = store_edge[i].end - 1;
+		int start;
+		int end;		
+
+		scanf("%d%d", &start, &end);
+
+		start = start - 1;
+		end = end - 1;
 
 		original[start*num_v + end] = true;
 		original[start + end*num_v] = true;
 	}
+
 
 	// generate visited point;
 	visited.resize(num_v);
@@ -114,7 +111,7 @@ int main()
 	query.resize(K);
 	for(int i=0;i<K;i++)
 	{
-		cin>>query[i];
+		scanf("%d", &query[i]);
 	}
 
 
@@ -127,25 +124,16 @@ int main()
 			adjacency_matrix[i] = original[i];
 		}
 
-		for(int i=0;i<num_v;i++)
-		{
-			int start = query[j]-1;
-			int end = i;
-
-			adjacency_matrix[start*num_v + end] = false;
-			adjacency_matrix[start + end*num_v] = false;
-		}
-
 		counter = 0;
-		DFSTraverse();
-		result.push_back(counter-2);
+		DFSTraverse(query[j]);
+		result.push_back(counter-1);
 	}
 
 
 	for(int i=0;i<result.size();i++)
 	{
-		cout<<result[i];
-		if(i!=result.size()-1)    cout<<endl;
+		printf("%d", result[i]);
+		if(i!=result.size()-1)    printf("\n");
 	}
 
 
