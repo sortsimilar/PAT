@@ -5,9 +5,9 @@
 #include<vector>
 using namespace std;
 
-class Book
+
+struct Book
 {
-public:
 	string ID;
 	string title;
 	string author;
@@ -16,17 +16,30 @@ public:
 	string year;
 };
 
+
 bool compare(Book a, Book b)
 {
 	return a.ID < b.ID;
 }
+
+
+int string_to_int(string s)
+{
+	int result;
+	stringstream ss;
+	ss<<s;
+	ss>>result;
+
+	return result;
+}
+
 
 int main()
 {
 	// store all book information; 
 	string N;
 	getline(cin, N);
-	int num_N = stoi(N);
+	int num_N = string_to_int(N);
 
 	vector<Book> check(num_N);
 
@@ -67,7 +80,7 @@ int main()
 	// query process ///////////////
 	string M;
 	getline(cin, M);
-	int num_M = stoi(M);
+	int num_M = string_to_int(M);
 
 	vector<string> query(num_M);
 
@@ -145,7 +158,8 @@ int main()
 	}
 
 
-
-	system("pause");
 	return 0;
 }
+
+
+
