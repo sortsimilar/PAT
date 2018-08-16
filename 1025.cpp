@@ -4,9 +4,8 @@
 #include<vector>
 using namespace std;
 
-class Testnee
+struct Testnee
 {
-public:
 	string reg;
 	int score;
 	int final_rank;
@@ -99,7 +98,10 @@ int main()
 	}
 
 
-
-	system("pause");
 	return 0;
 }
+
+
+
+
+
