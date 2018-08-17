@@ -1,31 +1,23 @@
 #include<algorithm>
 #include<iostream>
+#include<map>
 #include<string>
 #include<vector>
 using namespace std;
 
-struct Student
+struct one_student
 {
-	bool flag;
-	int id;
-	string name;
 	vector<int> courses;
 };
 
 
-int string_to_int(string name)
+map<string, one_student> id_to_course;
+
+
+bool compare(int a, int b)
 {
-	int number = name[3] - '0';
-	int last = (name[2] - 'A') * 10;
-	int middle = (name[1] - 'A') * 10 * 26;
-	int first = (name[0] - 'A') * 10 * 26 * 26;
-
-	int result = first + middle + last + number;
-
-	return result;
+	return a < b;
 }
-
-
 
 
 int main()
@@ -33,83 +25,68 @@ int main()
 	int N, K;
 	cin >> N >> K;
 
-
-	vector<Student> map(193336);
-
-	for (int i = 0;i < 193336;i++)
+	for(int i=0;i<K;i++)
 	{
-		map[i].flag = false;
-		map[i].courses.push_back(2501);
-	}
+		int course_id;
+		cin>>course_id;
 
-	for (int i = 0;i < K;i++)
-	{
-		int course_index;
-		int num_reg;
+		int num_student;
+		cin>>num_student;
 
-		cin >> course_index >> num_reg;
-
-		for (int j = 0;j < num_reg;j++)
+		for(int j=0;j<num_student;j++)
 		{
-			string temp;
-			cin >> temp;
+			string id;
+			cin>>id;
 
-			int id = string_to_int(temp);
-
-			map[id].flag = true;
-			map[id].id = id;
-			map[id].name = temp;
-//			map[id].courses.push_back(course_index); 
-			int position = 0;
-			for (int k = 0;k < map[id].courses.size();k++)
-			{
-				if (course_index < map[id].courses[k])
-				{
-					position = k;
-					break;
-				}
-			}
-
-			map[id].courses.insert(map[id].courses.begin() + position, course_index);
+			id_to_course[id].courses.push_back(course_id);
 		}
-
 	}
 
-	// input check sequence;
-	vector<string> sequence(N);
-	for (int i = 0;i < N;i++)
+/*
+	for(int i=0;i<id_to_course["ZOE1"].courses.size();i++)
 	{
-		cin >> sequence[i];
+		cout<<id_to_course["ZOE1"].courses[i]<<" ";
+	}
+*/
+
+	vector<string> queries(N);
+	for(int i=0;i<N;i++)
+	{
+		cin>>queries[i];
 	}
 
-	
-
-
-
-
-	// output result;
-	for (int i = 0;i < N;i++)
+	for(int i=0;i<queries.size();i++)
 	{
-		string temp_name = sequence[i];
-		int temp_id = string_to_int(temp_name);
-
-		if (map[temp_id].flag == true)
+		if(id_to_course[queries[i]].courses.size() == 0)
 		{
-			cout << map[temp_id].name << " ";
-			cout << map[temp_id].courses.size() - 1 << " ";
-//			sort(map[temp_id].courses.begin(), map[temp_id].courses.end());
-			for (int j = 0;j < map[temp_id].courses.size() - 1;j++)
+			cout<<queries[i]<<" 0";
+		}
+		else
+		{
+			sort(id_to_course[queries[i]].courses.begin(), id_to_course[queries[i]].courses.end(), compare);
+
+			cout<<queries[i]<<" "<<id_to_course[queries[i]].courses.size()<<" ";
+
+			for(int j=0;j<id_to_course[queries[i]].courses.size();j++)
 			{
-				cout << map[temp_id].courses[j];
-				if (j != map[temp_id].courses.size() - 2)    cout << " ";
+				if(j!=0)    cout<<" ";
+				cout<<id_to_course[queries[i]].courses[j];
+
 			}
 		}
-		else    cout << temp_name <<" 0";
+		
 
-		if (i != N - 1)    cout << endl;
 
+		if(i!=queries.size()-1)    cout<<endl;
 	}
 
-	system("pause");
+
 	return 0;
 }
+
+
+
+
+
+
+
