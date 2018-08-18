@@ -34,20 +34,19 @@ int main()
 	int NG; // maximum number of mice in a group
 	cin>>NG;
 
-	for(int i=0;i<NP;i++)
+	weight_sequence.resize(NP);
+	for(int i=0;i<weight_sequence.size();i++)
 	{
-		Node temp;
-		cin>>temp.key;
-		temp.index = i;
-		temp.level = 0;
-		weight_sequence.push_back(temp);
+		cin>>weight_sequence[i].key;
+		weight_sequence[i].index = i;
+		weight_sequence[i].level = 0;
 	}
 
-	for(int i=0;i<NP;i++)
+
+	permutation.resize(NP);
+	for(int i=0;i<permutation.size();i++)
 	{
-		int temp;
-		cin>>temp;
-		permutation.push_back(temp);
+		cin>>permutation[i];
 	}
 
 
