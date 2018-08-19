@@ -12,8 +12,8 @@ struct Edge
 
 int num_v; // number of vertices
 vector<int> query;
-vector<bool> adjacency_matrix;
-vector<bool> original;
+bool adjacency_matrix[1001][1001];
+bool original[1001][1001];
 vector<bool> visited;
 
 int counter; // count num of range after occupy;
@@ -23,8 +23,8 @@ bool test_edge(int start, int end)
 {
 	bool flag = false;
 
-	if(adjacency_matrix[(start-1)*num_v+(end-1)]==true)    flag = true;
-	if(adjacency_matrix[(start-1)+(end-1)*num_v]==true)    flag = true;
+	if(adjacency_matrix[start-1][end-1]==true)    flag = true;
+	if(adjacency_matrix[end-1][start-1]==true)    flag = true;
 
 	return flag;
 }
@@ -78,10 +78,12 @@ int main()
 
 	num_v = N;
 	// create adjacency matrix;
-	original.resize(num_v*num_v);
-	for(int i=0;i<num_v*num_v;i++)
+	for(int i=0;i<num_v;i++)
 	{
-		original[i] = false;
+		for(int j=0;j<num_v;j++)
+		{
+			original[i][j] = false;
+		}
 	}
 
 
@@ -92,11 +94,8 @@ int main()
 
 		scanf("%d%d", &start, &end);
 
-		start = start - 1;
-		end = end - 1;
-
-		original[start*num_v + end] = true;
-		original[start + end*num_v] = true;
+		original[start-1][end-1] = true;
+		original[end-1][start-1] = true;
 	}
 
 
@@ -118,10 +117,12 @@ int main()
 	for(int j=0;j<query.size();j++)
 	{
 		// cut one dot;
-		adjacency_matrix.resize(num_v*num_v);
-		for(int i=0;i<original.size();i++)
+		for(int i=0;i<num_v;i++)
 		{
-			adjacency_matrix[i] = original[i];
+			for(int j=0;j<num_v;j++)
+			{
+				adjacency_matrix[i][j] = original[i][j];
+			}
 		}
 
 		counter = 0;
