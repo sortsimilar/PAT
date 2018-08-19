@@ -28,7 +28,7 @@ struct OnePath
 int num_v;
 vector<Edge> store_edge;
 vector<int> rescue;
-vector<int> adjacency_matrix;
+int adjacency_matrix[501][501];
 vector<int> dist;
 vector<bool> sptSet;
 vector<PreviousNode> previous_list;
@@ -36,11 +36,6 @@ vector<OnePath> paths;
 int C2; // city must save;
 
 
-
-int get_weight(int start, int end)
-{
-	return adjacency_matrix[start*num_v + end];
-}
 
 int minDistance()
 {
@@ -80,16 +75,16 @@ void dijkstra(int src)
 
 		for (int v=0;v<num_v;v++)
 		{			
-			if (!sptSet[v] && get_weight(u, v) && dist[u]!=INT_MAX)
+			if (!sptSet[v] && adjacency_matrix[u][v] && dist[u]!=INT_MAX)
 			{
-				if(dist[u]+get_weight(u, v)<dist[v])
+				if(dist[u]+adjacency_matrix[u][v]<dist[v])
 				{
-					dist[v] = dist[u] + get_weight(u, v);
+					dist[v] = dist[u] + adjacency_matrix[u][v];
 					
 					previous_list[v].previous_member.clear();
 					previous_list[v].previous_member.push_back(u);
 				}
-				else if(dist[u]+get_weight(u, v)==dist[v])
+				else if(dist[u]+adjacency_matrix[u][v]==dist[v])
 				{
 					previous_list[v].previous_member.push_back(u);
 				}
@@ -163,10 +158,12 @@ int main()
 	}
 
 	// create adjacency matrix;
-	adjacency_matrix.resize(num_v*num_v);
-	for(int i=0;i<num_v*num_v;i++)
+	for(int i=0;i<num_v;i++)
 	{
-		adjacency_matrix[i] = 0;
+		for(int j=0;j<num_v;j++)
+		{
+			adjacency_matrix[i][j] = 0;
+		}
 	}
 
 	// save current amp in adjacency matrix;
@@ -175,8 +172,8 @@ int main()
 		int start = store_edge[i].start;
 		int end = store_edge[i].end;
 
-		adjacency_matrix[start*num_v + end] = store_edge[i].weight;
-		adjacency_matrix[start + end*num_v] = store_edge[i].weight;
+		adjacency_matrix[start][end] = store_edge[i].weight;
+		adjacency_matrix[end][start] = store_edge[i].weight;
 	}
 
 	
