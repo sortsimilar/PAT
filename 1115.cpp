@@ -8,49 +8,75 @@ struct Node
 	int value;
 	int left;
 	int right;
-	int parent;
+	int level;
 };
 
 vector<Node> binary;
-int counter = 0;
+vector<int> level_sequence;
+vector<int> hash_level;
 
-void level_order(Node root, int level)
+void level_order(int root)
 {
-	if(level==1)    counter++;
-	else if(level>1)
+	vector<int> q;
+	q.push_back(root);
+	binary[root].level = 0;
+
+	while(!q.empty())
 	{
-		if(root.left != -1)    level_order(binary[root.left], level-1);
-		if(root.right != -1)    level_order(binary[root.right], level-1);
+		int current = q[0];
+		q.erase(q.begin());
+		level_sequence.push_back(current);
+
+		if(hash_level.size() <= binary[current].level)
+		{
+			hash_level.push_back(1);
+		}
+		else
+		{
+			hash_level[binary[current].level]++;
+		}
+
+
+		if(binary[current].left != -1)
+		{
+			q.push_back(binary[current].left);
+			binary[binary[current].left].level = binary[current].level + 1;
+		}
+
+		if(binary[current].right != -1)    
+		{
+			q.push_back(binary[current].right);
+			binary[binary[current].right].level = binary[current].level + 1;
+		}
 	}
 }
+
+
+
 
 int main()
 {
 	int N;
 	cin>>N;	
 
-	for(int i=0;i<N;i++)
+	binary.resize(N);
+	for(int i=0;i<binary.size();i++)
 	{
-		Node temp;
-		cin>>temp.value;
-		temp.name = i;
-		temp.parent = -1;
-		temp.left = -1;
-		temp.right = -1;
-
-		binary.push_back(temp);
+		cin>>binary[i].value;
+		binary[i].name = i;
+		binary[i].left = -1;
+		binary[i].right = -1;
 	}
 
 	for(int i=1;i<N;i++)
 	{
 		int y;
 		int x = binary[0].name;
-		int z = i; // change to i afterwards;
 
 		while(x != -1)
 		{
 			y = x;
-			if(binary[z].value <= binary[x].value)
+			if(binary[i].value <= binary[x].value)
 			{
 				x = binary[x].left;
 			}
@@ -61,47 +87,33 @@ int main()
 		}
 	
 		// insert progress; 
-		if(binary[z].value <= binary[y].value)
+		if(binary[i].value <= binary[y].value)
 		{
-		    binary[y].left = z;
-			binary[z].parent = y;
+		    binary[y].left = i;
 		}
 		else
 		{
-		    binary[y].right = z;
-			binary[z].parent = y;
+		    binary[y].right = i;
 		}
 	}
 
 	// get height of binary search tree;
-	int height = -1;
-	for(int i=0;i<N;i++)
-	{
-		int distance = 0;
-		int current_node = i; // change 0 to i afterwards;
-	
-		while(current_node != -1)
-		{
-			distance++;
-			current_node = binary[current_node].parent;
-		}
+	level_order(0);
 
-		if(distance>height)    height = distance;
 
-	}
-	
-//	cout<<endl<<height<<endl;
-
-	counter = 0;
-	level_order(binary[0], height);
-	int n1 = counter;
-
-	counter = 0;
-	level_order(binary[0], height-1);
-	int n2 = counter;
-
-	cout<<n1<<" + "<<n2<<" = "<<n1+n2;
+	int first = hash_level[hash_level.size()-1];
+	int second = hash_level[hash_level.size()-2];
+	cout<<first<<" + "<<second<<" = "<<first+second;
 
 
 	return 0;
 }
+
+
+/*
+
+9
+25 30 42 16 20 20 35 -5 28
+
+
+*/
