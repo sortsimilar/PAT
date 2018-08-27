@@ -2,16 +2,8 @@
 #include<vector>
 using namespace std;
 
-struct Edge
-{
-	int start;
-	int end;
-};
 
-
-int N; // number of vertices
-int M; //  number of edges
-vector<Edge> store_edge;
+int num_v;
 vector<int> hash_table;
 vector<bool> adjacency_matrix;
 vector<bool> visited;
@@ -22,8 +14,8 @@ bool test_edge(int start, int end)
 {
 	bool flag = false;
 
-	if(adjacency_matrix[(start-1)*N+(end-1)]==true)    flag = true;
-	if(adjacency_matrix[(start-1)+(end-1)*N]==true)    flag = true;
+	if(adjacency_matrix[(start-1)*num_v + (end-1)]==true)    flag = true;
+	if(adjacency_matrix[(start-1) + (end-1)*num_v]==true)    flag = true;
 
 	return flag;
 }
@@ -33,7 +25,7 @@ void DFS(int i)
 {
 	visited[i-1] = true;
 //	cout<<i<<" ";
-	for(int j=1;j<=N;j++)
+	for(int j=1;j<=num_v;j++)
 	{
 		if((test_edge(i, j)==true)&&(visited[j-1]==false))
 		{
@@ -48,11 +40,11 @@ bool test_connect()
 {
 	bool flag = true;
 
-	DFS(N);
+	DFS(num_v);
 
-	for(int i=0;i<N;i++)
+	for(int i=1;i<=num_v;i++)
 	{
-		if(visited[i]==false)
+		if(visited[i-1]==false)
 		{
 			flag = false;
 			break;
@@ -68,7 +60,11 @@ bool test_connect()
 int main()
 {
 	
+	int N; // number of vertices
+	int M; //  number of edges
+
 	cin>>N;
+	num_v = N;
 
 	for(int i=0;i<N;i++)
 	{
@@ -77,13 +73,6 @@ int main()
 	
 	cin>>M;
 
-	for(int i=0;i<M;i++)
-	{
-		Edge temp;
-		cin>>temp.start;
-		cin>>temp.end;
-		store_edge.push_back(temp);
-	}
 
 	// create adjacency matrix;
 	for(int i=0;i<N*N;i++)
@@ -94,11 +83,16 @@ int main()
 	// save current amp in adjacency matrix;
 	for(int i=0;i<M;i++)
 	{
-		int start = store_edge[i].start - 1;
-		int end = store_edge[i].end - 1;
+		int start;
+		cin>>start;
+		int end;
+		cin>>end;
 
-		adjacency_matrix[start*N + end] = true;
-		adjacency_matrix[start + end*N] = true;
+		hash_table[start-1]++;
+		hash_table[end-1]++;
+
+		adjacency_matrix[(start-1)*N + (end-1)] = true;
+		adjacency_matrix[(start-1) + (end-1)*N] = true;
 	}
 
 //	cout<<test_edge(2, 1)<<endl;
@@ -112,16 +106,6 @@ int main()
 
 	bool connected = test_connect();
 
-
-
-	for(int i=0;i<M;i++)
-	{
-		int start = store_edge[i].start - 1;
-		int end = store_edge[i].end - 1;
-
-		hash_table[start]++;
-		hash_table[end]++;
-	}
 
 // output degree of each vertex;
 	int counter = 0;
@@ -151,11 +135,23 @@ int main()
 }
 
 
+/*
 
+7 12
+5 7
+1 2
+1 3
+2 3
+2 4
+3 4
+5 2
+7 6
+6 3
+4 5
+6 4
+5 6
 
-
-
-
+*/
 
 
 
