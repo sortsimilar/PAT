@@ -3,35 +3,27 @@
 using namespace std;
 
 
-struct Edge
-{
-	int first;
-	int second;
-
-};
-
-vector<Edge> graph;
-vector<bool> matrix;
+int num_v;
+vector<bool> adjacency_matrix;
 vector<int> query;
 
-int N; // num of vertices;
-int M; // num of edges;
 
-bool test_edge(int first, int second)
+
+bool test_edge(int start, int end)
 {
-	int one = (first-1) * N + (second-1);
-	int other = (second-1) * N + (first-1);
+	bool flag = false;
 
-	if((matrix[one]==false)&&(matrix[other]==false))    return false;
-	else    return true;
+	if(adjacency_matrix[(start-1)*num_v+(end-1)]==true)    flag = true;
+	if(adjacency_matrix[(start-1)+(end-1)*num_v]==true)    flag = true;
 
+	return flag;
 }
 
 
 
 int test_hamil()
 {
-	if(query.size() != N+1) // case 1: test whether size if correct;
+	if(query.size() != num_v+1) // case 1: test whether size if correct;
 	{
 		return false;
 	}
@@ -53,8 +45,8 @@ int test_hamil()
 		else
 		{
 			// case 3: test whether frequency is correct;
-			vector<int> freq(N);
-			for(int i=0;i<N;i++)    freq[i] = 0;
+			vector<int> freq(num_v);
+			for(int i=0;i<num_v;i++)    freq[i] = 0;
 
 			for(int i=0;i<query.size();i++)
 			{
@@ -85,27 +77,30 @@ int test_hamil()
 int main()
 {
 	
-	cin>>N;	
-	cin>>M;
+	int N; // num of vertices;
+	int M; // num of edges;
 
-// store the edge ////////////////////////////////////////
-	vector<Edge> graph;
-	for(int i=0;i<M;i++)
-	{
-		Edge temp;
-		cin>>temp.first;
-		cin>>temp.second;
-		graph.push_back(temp);
-	}	
+	cin>>N;
+	num_v = N;	
+	cin>>M;
+	
 
 	for(int i=0;i<N*N;i++)
 	{
-		matrix.push_back(false); // initialize matrix;
+		adjacency_matrix.push_back(false); // initialize matrix;
 	}
+
+
 	for(int i=0;i<M;i++)
 	{
-		matrix[(graph[i].first-1) * N + (graph[i].second-1)] = true;
-		matrix[(graph[i].second-1) * N + (graph[i].first-1)] = true;
+		int start;
+		cin>>start;
+
+		int end;
+		cin>>end;
+
+		adjacency_matrix[(start-1)*num_v + (end-1)] = true;
+		adjacency_matrix[(start-1) + (end-1)*num_v] = true;
 	}
 
 
@@ -144,3 +139,27 @@ int main()
 
 	return 0;
 }
+
+
+/*
+
+6 10
+6 2
+3 4
+1 5
+2 5
+3 1
+4 1
+1 6
+6 3
+1 2
+4 5
+6
+7 5 1 4 3 6 2 5
+6 5 1 4 3 6 2
+9 6 2 1 6 3 4 5 2 6
+4 1 2 5 1
+7 6 1 3 4 5 2 6
+7 6 1 2 5 4 3 1
+
+*/
