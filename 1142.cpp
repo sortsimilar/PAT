@@ -1,22 +1,14 @@
 #include<iostream>
 #include<string>
 #include<vector>
-
 using namespace std;
 
-struct Edge
-{
-	int start;
-	int end;
-};
 
 int Nv; // number of vertices in the graph;
 int Ne; // number of undirected edges;
 
 int K; // size of cluster;
 vector<int> cluster;
-
-vector<Edge> store_edge;
 vector<bool> adjacency_matrix;
 vector<bool> visited;
 vector<string> result;
@@ -68,13 +60,6 @@ int main()
 	cin>>Nv; 	
 	cin>>Ne; 
 
-	store_edge.resize(Ne);
-	for(int i=0;i<Ne;i++)
-	{
-		cin>>store_edge[i].start;
-		cin>>store_edge[i].end;
-	}
-
 	// create adjacency matrix;
 	for(int i=0;i<Nv*Nv;i++)
 	{
@@ -84,11 +69,13 @@ int main()
 	// save current amp in adjacency matrix;
 	for(int i=0;i<Ne;i++)
 	{
-		int start = store_edge[i].start - 1;
-		int end = store_edge[i].end - 1;
+		int start;
+		cin>>start;
+		int end;
+		cin>>end;
 
-		adjacency_matrix[start*Nv + end] = true;
-		adjacency_matrix[start + end*Nv] = true;
+		adjacency_matrix[(start-1)*Nv + (end-1)] = true;
+		adjacency_matrix[(start-1) + (end-1)*Nv] = true;
 	}
 
 
