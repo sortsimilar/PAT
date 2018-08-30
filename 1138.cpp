@@ -7,7 +7,7 @@ struct Node
 {
 	int key;
 	Node* left;
-	Node* right;	
+	Node* right;
 };
 
 
@@ -15,69 +15,55 @@ vector<int> pre_order;
 vector<int> in_order;
 vector<int> post_order;
 
+
 Node* build_tree(int inStart, int inEnd, int preStart, int preEnd)
 {
-	if (preStart > preEnd || inStart > inEnd)
+	if(inStart>inEnd || preStart>preEnd)    return NULL;
+
+	Node* root = new Node;
+
+	int position;
+	for(int i=inStart;i<=inEnd;i++)
 	{
-		return NULL;
-	}
-
-
-	Node* root = new Node;  
-
-	int k = 0;
-	for (int i = inStart; i <= inEnd; i++) 
-	{
-		if (in_order[i] == pre_order[preStart]) 
+		if(in_order[i] == pre_order[preStart])
 		{
-			k = i;
+			position = i;
 			break;
 		}
 	}
 
+	
 	root->key = pre_order[preStart];
-	root->left = build_tree(inStart, k-1, preStart+1, preStart+k-inStart);
-	root->right = build_tree(k+1, inEnd, preStart+(k-inStart)+1, preEnd);
-
+	root->left = build_tree(inStart, position-1, preStart+1, preStart-inStart+position);
+	root->right = build_tree(position+1, inEnd, preStart-inStart+position+1, preEnd);
 	post_order.push_back(root->key);
 
 	return root;
 }
 
 
-
 int main()
 {
-// input process ////////////////////////////////////////
 	int N;
 	cin>>N;
-
-
-	for(int i=0;i<N;i++)
+	
+	pre_order.resize(N);
+	for(int i=0;i<pre_order.size();i++)
 	{
-		int temp;
-		cin>>temp;
-		pre_order.push_back(temp);
+		cin>>pre_order[i];
 	}
 
-	for(int i=0;i<N;i++)
+	in_order.resize(N);
+	for(int i=0;i<in_order.size();i++)
 	{
-		int temp;
-		cin>>temp;
-		in_order.push_back(temp);
+		cin>>in_order[i];
 	}
 
 
 	build_tree(0, N-1, 0, N-1);
+	cout<<post_order[0];	
 
-/*
-	for(int i=0;i<N;i++)
-	{
-		cout<<post_order[i]<<" ";
-	}
-*/
 
-	cout<<post_order[0];
 
 	return 0;
 }
