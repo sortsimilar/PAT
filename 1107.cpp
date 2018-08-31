@@ -3,90 +3,40 @@
 #include<sstream>
 #include<string>
 #include<vector>
-
 using namespace std;
 
-struct Node
+
+vector<int> father(1001, -1);
+vector<int> hobby(1001, -1);
+
+int find_root(int x)
 {
-	vector<int> hobby;
-	vector<int> hash_table;
-};
-
-
-int N; // total number of people in a social network;
-vector<Node> cluster;
-vector<bool> visited;
-vector<int> cluster_member;
-vector<int> result;
-
-int test_common(int first, int second)
-{
-	int result = 0;
-	for(int i=0;i<cluster[first-1].hash_table.size();i++)
-	{
-		result = result + cluster[first-1].hash_table[i] * cluster[second-1].hash_table[i];
-	}
-
-	return result;
+	if (father[x] < 0)    return x;
+	else    return father[x] = find_root(father[x]);
 }
 
 
-// DFS one range;
-void DFS(int i)
+void union_set(int s1, int s2)
 {
-	visited[i-1] = true;
-//	cout<<i<<" ";
+	int r1 = find_root(s1);
+	int r2 = find_root(s2);
 
-	cluster_member.push_back(i);
-
-	for(int j=1;j<=N;j++)
-	{
-		if((test_common(i, j)!=0)&&(visited[j-1]==false))
-		{
-			DFS(j);
-		}
-	}
-
+	if(r1 != r2)    father[r1] = r2;
 }
 
 
-// DFS all map;
-void DFSTraverse()
+bool compare(int a, int b)
 {
-	// initialize visited matrix;
-	for(int i=1;i<=N;i++)
-	{
-		visited[i-1] = false;
-	}
-
-
-	for(int i=1;i<=N;i++)
-	{
-		if(visited[i-1]==false)
-		{
-			cluster_member.clear();
-			DFS(i);
-//			cout<<cluster_member.size();
-			result.push_back(cluster_member.size());
-		}
-	}
-}
-
-bool compare(int first, int second)
-{
-	return first > second;
+	return a > b;
 }
 
 
 int main()
 {
-	
+	int N;
 	cin>>N;
-	
 
-	cluster.resize(N);	
-
-	for(int i=0;i<N;i++)
+	for(int i=1;i<=N;i++)
 	{
 		int num;
 		string temp;
@@ -96,37 +46,42 @@ int main()
 		ss<<temp;
 		ss>>num;
 
-		cluster[i].hobby.resize(num);
-		cluster[i].hash_table.resize(1005);
-		for(int j=0;j<1005;j++)
-		{
-			cluster[i].hash_table[j] = 0;
-		}
 
 		for(int j=0;j<num;j++)
 		{
 			int temp_hobby;
 			cin>>temp_hobby;
-			cluster[i].hobby[j] = temp_hobby;
-			cluster[i].hash_table[temp_hobby]++;
+			
+			if(hobby[temp_hobby] > 0)
+			{
+				union_set(hobby[temp_hobby], i);
+			}
+			
+			hobby[temp_hobby] = i;
+
 		}
 	}
 
-//	cout<<test_common(1, 1);
-	
-	// generate visited point;
-	for(int i=0;i<N;i++)
+//	cout<<find_root(4);
+
+
+	vector<int> root(N+1, 0);
+
+	for(int i=1;i<N+1;i++)
 	{
-		visited.push_back(false);
+		root[find_root(i)]++;
 	}
 
-
-//	DFS(3); // test DFS one range;
-	
-	DFSTraverse();
+	vector<int> result;
+	for(int i=1;i<N+1;i++)
+	{
+		if(root[i] != 0)
+		{
+			result.push_back(root[i]);
+		}
+	}
 
 	sort(result.begin(), result.end(), compare);
-
 	cout<<result.size()<<endl;
 	for(int i=0;i<result.size();i++)
 	{
@@ -140,4 +95,16 @@ int main()
 }
 
 
+/*
 
+8
+3: 2 7 10
+1: 4
+2: 5 3
+1: 4
+1: 3
+1: 4
+4: 6 8 1 5
+1: 4
+
+*/
