@@ -1,8 +1,12 @@
-#include <cstdio>
-#include <iostream>
+#include<iostream>
+#include<string>
+#include<vector>
 using namespace std;
 
-int father[10001];
+vector<int> father(10001, -1);
+vector<bool> bird(10001, false);
+vector<bool> root(10001, false);
+vector<int> birds;
 
 
 int find_root(int x)
@@ -23,45 +27,76 @@ void union_set(int s1, int s2)
 
 int main()
 {
-	for(int i=0;i<10001;i++)    father[i] = -1;
-	int n, k, bi, q;
-	cin >> n;
-	int pic[10001];
-	for(int i=0;i<10001;i++)    pic[i] = 0;
+	int N;
+	cin>>N;
 
-	int count = 0;
-	for (int i = 1; i <= n; i++) 
+
+	for(int i=0;i<N;i++)
 	{
-		cin >> k;
-		for (int j = 0; j < k; j++) 
+		int K;
+		cin>>K;
+
+		int first_id;
+		cin>>first_id;
+
+		if(bird[first_id]==false)
 		{
-			cin >> bi;
-			if (pic[bi] == 0) 
-			{
-				pic[bi] = i;
-				count++;
-			}
-			else 
-			{
-				union_set(i, pic[bi]);
-			}
+			bird[first_id] = true;
+			birds.push_back(first_id);
 		}
+		
+		
+		for(int j=1;j<K;j++)
+		{
+			int current_id;
+			cin>>current_id;
+
+			if(bird[current_id]==false)
+			{
+				bird[current_id] = true;
+				birds.push_back(current_id);
+			}
+
+			union_set(first_id, current_id);
+		}
+
 	}
-
-	int nTree = 0;
-	for (int i = 1; i <= n; i++)
-		if (father[i] < 0) nTree++;
-
-
-	cout<<nTree<<" "<<count<<endl;
-	cin >> q;
-
-	for (int i = 0; i < q; i++) 
+	
+	int Q;
+	cin>>Q;
+	vector<string> result;
+	for(int i=0;i<Q;i++)
 	{
-		int b1, b2;
-		cin >> b1 >> b2;
-		cout << (find_root(pic[b1]) == find_root(pic[b2]) ? "Yes" : "No") << endl;
+		int start;
+		cin>>start;
+		int end;
+		cin>>end;
+
+		if(find_root(start)==find_root(end))    result.push_back("Yes");
+		else    result.push_back("No");
 	}
+
+//	cout<<find_root(10)<<" "<<find_root(3)<<endl;
+
+	int RootCounter = 0;
+	for(int i=0;i<birds.size();i++)
+	{
+		int current_root = find_root(birds[i]);
+		if(root[current_root] == false)
+		{
+			root[current_root] = true;
+			RootCounter++;
+		}
+	}	
+
+
+	cout<<RootCounter<<" "<<birds.size()<<endl;
+	for(int i=0;i<result.size();i++)
+	{
+		cout<<result[i];
+		if(i!=result.size()-1)    cout<<endl;
+	}
+
 
     return 0;
 }
