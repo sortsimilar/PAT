@@ -19,15 +19,15 @@ Polynomial add_polynomial(Polynomial first, Polynomial second)
 	int first_index = 0;
 	int second_index = 0;
 
-	while (first_index < first.num || (second_index < second.num))
+	while ((first_index < first.num) && (second_index < second.num))
 	{
-		if ((first.exponent[first_index] < second.exponent[second_index]) || first_index==first.num)
+		if (first.exponent[first_index] < second.exponent[second_index])
 		{
 			output.exponent.push_back(second.exponent[second_index]);
 			output.coefficient.push_back(second.coefficient[second_index]);
 			second_index++;
 		}
-		else if ((first.exponent[first_index] > second.exponent[second_index]) || second_index==second.num)
+		else if (first.exponent[first_index] > second.exponent[second_index])
 		{
 			output.exponent.push_back(first.exponent[first_index]);
 			output.coefficient.push_back(first.coefficient[first_index]);
@@ -45,6 +45,21 @@ Polynomial add_polynomial(Polynomial first, Polynomial second)
 			second_index++;
 		}
 	}
+
+	while(first_index < first.num)
+	{
+		output.exponent.push_back(first.exponent[first_index]);
+		output.coefficient.push_back(first.coefficient[first_index]);
+		first_index++;
+	}
+
+	while(second_index < second.num)
+	{
+		output.exponent.push_back(second.exponent[second_index]);
+		output.coefficient.push_back(second.coefficient[second_index]);
+		second_index++;
+	}
+
 
 	return output;
 }
@@ -92,7 +107,9 @@ int main()
 }
 
 
+/*
 
+2 1 2.4 0 3.2
+2 2 1.5 1 0.5
 
-
-
+*/
