@@ -1,152 +1,101 @@
 #include<iostream>
 #include<vector>
-
 using namespace std;
 
-struct Edge
+
+struct Node
 {
-	int start;
-	int end;
+	int key;
+	int indegree;
+	int current_degree;
+	vector<int> next;
 };
 
 
-int N; // number of vertices in the graph;
-int M; // number of directed edges;
-vector<Edge> store_edge;
-vector<bool> adjacency_matrix;
-vector<bool> visited;
+int num_v;
+vector<Node> nodes;
 vector<int> query;
 vector<int> result;
-
-bool test_edge(int start, int end)
-{
-	bool flag = false;
-
-	if(adjacency_matrix[(start-1)*N+(end-1)]==true)    flag = true;
-
-
-	return flag;
-}
-
-// DFS one range;
-void DFS(int i)
-{
-	visited[i-1] = true;
-//	cout<<i<<" ";
-	for(int j=1;j<=N;j++)
-	{
-		if((test_edge(i, j)==true)&&(visited[j-1]==false))
-		{
-			DFS(j);
-		}
-	}
-
-}
-
-
-// test connected point;
-bool test_connect(int start, int end)
-{
-	bool flag;
-
-	// generate visited point;
-	visited.resize(N);
-	for(int i=0;i<N;i++)
-	{
-		visited[i] = false;
-	}
-
-
-	DFS(start);
-
-	if(visited[end-1]==true)
-	{
-		flag = true;
-	}
-	else
-	{
-		flag = false;
-	}
-
-
-	return flag;
-}
 
 
 
 int main()
 {
-	
+	int N; // number of vertices in the graph;
+	int M; // number of directed edges;	
 	cin>>N;	
+	num_v = N;
 	cin>>M;
 
-	store_edge.resize(M);
-	for(int i=0;i<M;i++)
+
+	nodes.resize(N);
+	for(int i=0;i<nodes.size();i++)
 	{
-		cin>>store_edge[i].start;
-		cin>>store_edge[i].end;
+		nodes[i].key = i;
+		nodes[i].indegree = 0;
+		nodes[i].current_degree = 0;
 	}
 
-	// create adjacency matrix;
-	for(int i=0;i<N*N;i++)
-	{
-		adjacency_matrix.push_back(false);
-	}
 
 	// save current amp in adjacency matrix;
 	for(int i=0;i<M;i++)
 	{
-		int start = store_edge[i].start - 1;
-		int end = store_edge[i].end - 1;
+		int start;
+		cin>>start;
+		int end;
+		cin>>end;
 
-		adjacency_matrix[start*N + end] = true;
+		nodes[start-1].next.push_back(end-1);
+		nodes[end-1].indegree++;		
 	}
 
 
 //	cout<<test_edge(3, 4)<<endl;
 
-	// generate visited point;
-	visited.resize(N);
-	for(int i=0;i<N;i++)
-	{
-		visited[i] = false;
-	}
-
-
-//	cout<<test_connect(1, 6)<<endl;
-//	cout<<test_connect(6, 1)<<endl;
-
-	int K; // num of query;
+	int K;
 	cin>>K;
 
-	for(int i=0;i<K;i++)
+
+	for(int i=0;i<K;i++)	
 	{
 		query.clear();
-		for(int j=0;j<N;j++)
+
+		for(int j=0;j<num_v;j++)
 		{
-			int temp;
-			cin>>temp;
-			query.push_back(temp);
+			int index;
+			cin>>index;
+			index--;
+			query.push_back(index);
+		}
+
+		for(int j=0;j<num_v;j++)
+		{
+			nodes[j].current_degree = nodes[j].indegree;
 		}
 
 
-		bool flag = true;
-		for(int j=0;j<N-1;j++)
+		bool isTopo = true;
+
+		for(int j=0;j<num_v;j++)
 		{
-			if((test_edge(query[j], query[j+1])==false)&&(test_connect(query[j], query[j+1])==true))
+			if(nodes[query[j]].current_degree != 0)
 			{
-				flag = false;
+				isTopo = false;
 				break;
+			}
+
+			for(int k=0;k<nodes[query[j]].next.size();k++)
+			{
+				int next_index = nodes[query[j]].next[k];
+				nodes[next_index].current_degree--;
 			}
 		}
 
-//		cout<<flag<<endl;
-		if(flag==false)
-		{
-			result.push_back(i);
-		}
+//		cout<<isTopo<<endl;
+		if(isTopo == false)    result.push_back(i);
 
 	}
+
 
 	for(int i=0;i<result.size();i++)
 	{
@@ -155,12 +104,28 @@ int main()
 		if(i!=result.size()-1)    cout<<" ";
 	}
 
-
-
-
 	return 0;
 }
 
 
+/*
 
+6 8
+1 2
+1 3
+5 2
+5 4
+2 3
+2 6
+3 4
+6 4
+5
+1 5 2 3 6 4
+5 1 2 6 3 4
+5 1 2 3 6 4
+5 2 1 6 3 4
+1 2 3 4 5 6
+
+
+*/
 	
