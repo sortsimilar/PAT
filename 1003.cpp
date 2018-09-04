@@ -4,12 +4,6 @@
 #include<vector>
 using namespace std;
 
-struct Edge
-{
-	int start;
-	int end;
-	int weight;
-};
 
 struct PreviousNode
 {
@@ -26,9 +20,8 @@ struct OnePath
 
 
 int num_v;
-vector<Edge> store_edge;
 vector<int> rescue;
-int adjacency_matrix[501][501];
+vector<int> adjacency_matrix;
 vector<int> dist;
 vector<bool> sptSet;
 vector<PreviousNode> previous_list;
@@ -75,16 +68,16 @@ void dijkstra(int src)
 
 		for (int v=0;v<num_v;v++)
 		{			
-			if (!sptSet[v] && adjacency_matrix[u][v] && dist[u]!=INT_MAX)
+			if (!sptSet[v] && adjacency_matrix[u*num_v + v] && dist[u]!=INT_MAX)
 			{
-				if(dist[u]+adjacency_matrix[u][v]<dist[v])
+				if(dist[u]+adjacency_matrix[u*num_v + v]<dist[v])
 				{
-					dist[v] = dist[u] + adjacency_matrix[u][v];
+					dist[v] = dist[u] + adjacency_matrix[u*num_v + v];
 					
 					previous_list[v].previous_member.clear();
 					previous_list[v].previous_member.push_back(u);
 				}
-				else if(dist[u]+adjacency_matrix[u][v]==dist[v])
+				else if(dist[u]+adjacency_matrix[u*num_v + v]==dist[v])
 				{
 					previous_list[v].previous_member.push_back(u);
 				}
@@ -148,32 +141,24 @@ int main()
 		cin>>rescue[i];
 	}
 
-
-	store_edge.resize(M);
-	for(int i=0;i<M;i++)
-	{
-		cin>>store_edge[i].start;
-		cin>>store_edge[i].end;
-		cin>>store_edge[i].weight;
-	}
-
 	// create adjacency matrix;
-	for(int i=0;i<num_v;i++)
+	for(int i=0;i<num_v*num_v;i++)
 	{
-		for(int j=0;j<num_v;j++)
-		{
-			adjacency_matrix[i][j] = 0;
-		}
+		adjacency_matrix.push_back(0);
 	}
 
 	// save current amp in adjacency matrix;
-	for(int i=0;i<store_edge.size();i++)
+	for(int i=0;i<M;i++)
 	{
-		int start = store_edge[i].start;
-		int end = store_edge[i].end;
+		int start;
+		cin>>start;
+		int end;
+		cin>>end;
+		int weight;
+		cin>>weight;
 
-		adjacency_matrix[start][end] = store_edge[i].weight;
-		adjacency_matrix[end][start] = store_edge[i].weight;
+		adjacency_matrix[start*num_v + end] = weight;
+		adjacency_matrix[end*num_v + start] = weight;
 	}
 
 	
@@ -196,6 +181,17 @@ int main()
 	return 0;
 }
 
+/*
 
+5 6 0 2
+1 2 1 5 3
+0 1 1
+0 2 2
+0 3 1
+1 2 1
+2 4 1
+3 4 1
+
+*/
 
 
