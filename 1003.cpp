@@ -29,6 +29,11 @@ vector<OnePath> paths;
 int C2; // city must save;
 
 
+int get_weight(int start, int end)
+{
+	return adjacency_matrix[start*num_v + end];
+}
+
 
 int minDistance()
 {
@@ -63,23 +68,23 @@ void dijkstra(int src)
   
 	for (int i=0;i<num_v;i++)
 	{
-		int u = minDistance();		
-		sptSet[u] = true; // Mark the picked vertex as processed
+		int min_index = minDistance();		
+		sptSet[min_index] = true; // Mark the picked vertex as processed
 
-		for (int v=0;v<num_v;v++)
+		for (int j=0;j<num_v;j++)
 		{			
-			if (!sptSet[v] && adjacency_matrix[u*num_v + v] && dist[u]!=INT_MAX)
+			if (!sptSet[j] && get_weight(min_index, j) && dist[min_index]!=INT_MAX)
 			{
-				if(dist[u]+adjacency_matrix[u*num_v + v]<dist[v])
+				if(dist[min_index]+get_weight(min_index, j)<dist[j])
 				{
-					dist[v] = dist[u] + adjacency_matrix[u*num_v + v];
+					dist[j] = dist[min_index] + get_weight(min_index, j);
 					
-					previous_list[v].previous_member.clear();
-					previous_list[v].previous_member.push_back(u);
+					previous_list[j].previous_member.clear();
+					previous_list[j].previous_member.push_back(min_index);
 				}
-				else if(dist[u]+adjacency_matrix[u*num_v + v]==dist[v])
+				else if(dist[min_index]+get_weight(min_index, j)==dist[j])
 				{
-					previous_list[v].previous_member.push_back(u);
+					previous_list[j].previous_member.push_back(min_index);
 				}
 			}
 		}
