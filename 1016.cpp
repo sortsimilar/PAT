@@ -1,30 +1,34 @@
 #include<algorithm>
+#include<cstdio>
 #include<iostream>
 #include<string>
 #include<vector>
 using namespace std;
 
-vector<int> rate(24);
-
-int last_time(int start_HH, int start_MM, int end_HH, int end_MM)
+struct Entry
 {
-	int result;
+	string name;
+	string time;
+	string status;
+};
 
-	if (start_HH == end_HH)
-	{
-		result = end_MM - start_MM;
-	}
-	else
-	{
-		result = -start_MM + end_MM;
-		for (int i = start_HH;i < end_HH;i++)
-		{
-			result = result + 60;
-		}
-	}
+struct User
+{
+	string name;
+	string month;
+	vector<string> start_time;
+	vector<string> end_time;
+};
 
-	return result;
-}
+
+
+vector<Entry> entries;
+vector<int> rate(24);
+vector<int> rate_sum(25);
+vector<User> result;
+vector<User> result_other;
+
+
 
 int calculate_time(string start, string end)
 {
@@ -32,52 +36,18 @@ int calculate_time(string start, string end)
 	int start_DD, start_HH, start_MM;
 	int end_DD, end_HH, end_MM;
 
-	start_DD = (start[4] - '0') + (start[3] - '0') * 10;
-	end_DD = (end[4] - '0') + (end[3] - '0') * 10;
-	start_HH = (start[7] - '0') + (start[6] - '0') * 10;
-	end_HH = (end[7] - '0') + (end[6] - '0') * 10;
-	start_MM = (start[10] - '0') + (start[9] - '0') * 10;
-	end_MM = (end[10] - '0') + (end[9] - '0') * 10;
+	start_DD = (start[0]-'0')*10 + (start[1]-'0');
+	end_DD = (end[0]-'0')*10 + (end[1]-'0');
+	start_HH = (start[3]-'0')*10 + (start[4]-'0');
+	end_HH = (end[3]-'0')*10 + (end[4]-'0');
+	start_MM = (start[6]-'0')*10 + (start[7]-'0');
+	end_MM = (end[6]-'0')*10 + (end[7]-'0');
 
-	if (start_DD == end_DD)
-	{
-		result = last_time(start_HH, start_MM, end_HH, end_MM);
-	}
-	else // cross day;
-	{
-		result = -last_time(00, 00, start_HH, start_MM) + last_time(00, 00, end_HH, end_MM);
-		for (int i = start_DD;i < end_DD;i++)
-		{
-			result = result + 60*24;
-		}
-
-	}
+	result = (end_DD*24*60 + end_HH*60 + end_MM) - (start_DD*24*60 + start_HH*60 + start_MM);
 
 	return result;
 }
 
-
-int cross_hour(int start_HH, int start_MM, int end_HH, int end_MM)
-{
-	int result;
-
-
-	if (start_HH == end_HH)
-	{
-		int current_price = rate[start_HH];
-		result = current_price * (end_MM - start_MM);
-	}
-	else
-	{
-		result =  - start_MM * rate[start_HH] + end_MM * rate[end_HH];
-		for (int i = start_HH;i < end_HH;i++)
-		{
-			result = result + rate[i] * 60;
-		}
-	}
-
-	return result;
-}
 
 // calculate money; 
 int calculate_money(string start, string end)
@@ -86,176 +56,145 @@ int calculate_money(string start, string end)
 	int start_DD, start_HH, start_MM;
 	int end_DD, end_HH, end_MM;
 
-	start_DD = (start[4] - '0') + (start[3] - '0') * 10;
-	end_DD = (end[4] - '0') + (end[3] - '0') * 10;
-	start_HH = (start[7] - '0') + (start[6] - '0') * 10;
-	end_HH = (end[7] - '0') + (end[6] - '0') * 10;
-	start_MM = (start[10] - '0') + (start[9] - '0') * 10;
-	end_MM = (end[10] - '0') + (end[9] - '0') * 10;
+	start_DD = (start[0]-'0')*10 + (start[1]-'0');
+	end_DD = (end[0]-'0')*10 + (end[1]-'0');
+	start_HH = (start[3]-'0')*10 + (start[4]-'0');
+	end_HH = (end[3]-'0')*10 + (end[4]-'0');
+	start_MM = (start[6]-'0')*10 + (start[7]-'0');
+	end_MM = (end[6]-'0')*10 + (end[7]-'0');
 
-	if (start_DD == end_DD)
-	{
-		result = cross_hour(start_HH, start_MM, end_HH, end_MM);
-	}
-	else // cross day;
-	{
-		int sum_day = 0;
-		for (int i = 0;i < rate.size();i++)
-		{
-			sum_day = sum_day + rate[i]*60;
-		}
+	int start_money = (start_DD-1)*rate_sum[24]*60 + rate_sum[start_HH]*60 + start_MM*rate[start_HH];
+	int end_money = (end_DD-1)*rate_sum[24]*60 + rate_sum[end_HH]*60 + end_MM*rate[end_HH];
 
-		result = -cross_hour(00, 00, start_HH, start_MM) + cross_hour(00, 00, end_HH, end_MM);
-		for (int i = start_DD;i < end_DD;i++)
-		{
-			result = result + sum_day;
-		}
-
-	}
+	result = end_money - start_money;
 
 	return result;
 }
 
 
-
-
+bool compare(Entry a, Entry b)
+{
+	if(a.name != b.name)    return a.name < b.name;
+	else    return a.time < b.time;
+}
 
 
 
 int main()
 {	
-	for (int i = 0;i < rate.size();i++)
+	for(int i=0;i<rate.size();i++)
 	{
-		cin >> rate[i];
+		cin>>rate[i];
+		rate_sum[i] = 0;
+	}
+
+	for(int i=0;i<rate.size();i++)
+	{
+		for(int j=i+1;j<rate_sum.size();j++)
+		{
+			rate_sum[j] = rate_sum[j] + rate[i];
+		}
 	}
 
 	int N;
-	cin >> N;
-
-	vector<string> name(N); vector<string> name_set;
-	vector<string> time(N);
-	vector<string> status(N);
-
-	for (int i = 0;i < N;i++) 
+	cin>>N;
+	entries.resize(N);
+	
+	for(int i=0;i<entries.size();i++)
 	{
-		cin >> name[i];
-		cin >> time[i];
-		cin >> status[i];
+		cin>>entries[i].name;
+		cin>>entries[i].time;
+		cin>>entries[i].status;
 	}
 
-	// find in the name_set where every name is unique; done;
-	for (int i = 0;i < N;i++)
+	sort(entries.begin(), entries.end(), compare);
+
+
+	User temp;
+	temp.name = entries[0].name;
+	temp.month = entries[0].time.substr(0, 2);
+	result.push_back(temp);
+
+	for(int i=1;i<entries.size();i++)
 	{
-		bool flag_exist = false;
-		for (int j = 0;j < name_set.size();j++)
+//		cout<<entries[i].name<<" "<<entries[i].time<<" "<<entries[i].status<<endl;
+		
+		if(entries[i].name != entries[i-1].name)
 		{
-			if (name[i] == name_set[j])
-			{
-				flag_exist = true;
-				break;
-			}
+			User temp;
+			temp.name = entries[i].name;
+			temp.month = entries[i].time.substr(0, 2);
+			result.push_back(temp);
 		}
 
-		if (flag_exist == false)
+		if(entries[i].name==entries[i-1].name && entries[i-1].status=="on-line" && entries[i].status=="off-line")
 		{
-			name_set.push_back(name[i]);
+			entries[i-1].time.erase(0, 3);
+			entries[i].time.erase(0, 3);		
+
+			result[result.size()-1].start_time.push_back(entries[i-1].time);
+			result[result.size()-1].end_time.push_back(entries[i].time);
 		}
 	}
 
-	// sort name_set according to alphebet; done;
-	sort(name_set.begin(), name_set.end());
-
-
-	for (int j = 0;j < name_set.size();j++)
+	for(int i=0;i<result.size();i++)
 	{
-		// creat on-set and off-set for one customer;
-		vector<string> on_set, off_set;
-		for (int i = 0;i < N;i++)
+		if(result[i].start_time.size() != 0)
 		{
-			if (name[i] == name_set[j]) // add to j;///////////////////////
-			{
-				if (status[i] == "on-line")
-				{
-					on_set.push_back(time[i]);
-				}
-				else
-				{
-					off_set.push_back(time[i]);
-				}
-			}
+			result_other.push_back(result[i]);
 		}
+	}
 
-		// sort on-set and off-set; done;
-		sort(on_set.begin(), on_set.end());
-		on_set.push_back("99:99:99:99");
-		sort(off_set.begin(), off_set.end());
-		off_set.push_back("00:00:00:00");
+	for(int i=0;i<result_other.size();i++)
+	{
+		cout<<result_other[i].name<<" "<<result_other[i].month<<endl;
 
-		int p_on = 0;
-		int p_off = 0;
-		int counter = 0;
 		double sum = 0;
-		while (1)
+
+		for(int j=0;j<result_other[i].start_time.size();j++)
 		{
-			if ((on_set[p_on] == "99:99:99:99") || (off_set[p_off] == "00:00:00:00"))
-			{
-				break;
-			}
+			cout<<result_other[i].start_time[j]<<" "<<result_other[i].end_time[j]<<" ";
 
-			if (on_set[p_on] >= off_set[p_off])
-			{
-				p_off++;
-			}
-			else if (on_set[p_on + 1] < off_set[p_off])
-			{
-				p_on++;
-			}
-			else
-			{
-				if (counter == 0)
-				{
-					cout << name_set[j] << " " << time[0][0] << time[0][1]<<endl; // change to j /////////////////////
-				}
-				counter++;
+			cout<<calculate_time(result_other[i].start_time[j], result_other[i].end_time[j])<<" $";
 
-				string temp_on = on_set[p_on];
-				string temp_off = off_set[p_off];
-				temp_on.erase(0, 3);
-				temp_off.erase(0, 3);
+			double current_fee = calculate_money(result_other[i].start_time[j], result_other[i].end_time[j]);
 
-				cout << temp_on << " " << temp_off<<" "<<calculate_time(on_set[p_on], off_set[p_off]) <<" $";
-				double one_fee = calculate_money(on_set[p_on], off_set[p_off]) / 100.0;
-				sum = sum + one_fee;
-				printf("%.2f", one_fee);
-				cout << endl;
+			printf("%.2f\n", current_fee/100.0);
 
-				p_off++;
-				p_on++;
-			}
-
+			sum = sum + calculate_money(result_other[i].start_time[j], result_other[i].end_time[j]);
 		}
 
-		if (counter > 0)
-		{
-			cout << "Total amount: $";
-			printf("%.2f", sum);
 
-			if (j != name_set.size() - 1) cout << endl;
-		}
+		cout<<"Total amount: $";
+		printf("%.2f", sum/100.0);
+
+		if(i!=result_other.size()-1)    cout<<endl;
 	}
 
+/*
+	for(int i=0;i<rate_sum.size();i++)
+	{
+		cout<<rate_sum[i]<<" ";
+	}
+*/
 
-	/*
-	for (int i = 0;i < on_set.size();i++) cout << on_set[i] << " " << endl;
-	cout << endl;
-	for (int i = 0;i < off_set.size();i++) cout << off_set[i] << " " << endl;
-	*/
-
-//	cout << calculate_money("01:01:06:01", "01:01:06:03");
-//	cout << calculate_money("01:01:06:01", "01:01:08:03") << endl;
-//	cout << calculate_money("01:02:00:01", "01:04:23:59");
-//	cout << calculate_money("01:01:05:59", "01:01:07:00");
-
-	system("pause");
 	return 0;
 }
+
+
+/*
+
+10 10 10 10 10 10 20 20 20 15 15 15 15 15 15 15 20 30 20 15 15 10 10 10
+10
+CYLL 01:01:06:01 on-line
+CYLL 01:28:16:05 off-line
+CYJJ 01:01:07:00 off-line
+CYLL 01:01:08:03 off-line
+CYJJ 01:01:05:59 on-line
+aaa 01:01:01:03 on-line
+aaa 01:02:00:01 on-line
+CYLL 01:28:15:41 on-line
+aaa 01:05:02:24 on-line
+aaa 01:04:23:59 off-line
+
+*/
