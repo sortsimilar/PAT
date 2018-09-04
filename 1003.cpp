@@ -5,28 +5,15 @@
 using namespace std;
 
 
-struct PreviousNode
-{
-	int key;
-	int next;
-	vector<int> previous_member;
-};
-
-struct OnePath
-{
-	int total_rescue;
-	vector<int> path_member;
-};
-
-
+int C2; // city must save;
 int num_v;
 vector<int> rescue;
 vector<int> adjacency_matrix;
 vector<int> dist;
 vector<bool> sptSet;
-vector<PreviousNode> previous_list;
-vector<OnePath> paths; 
-int C2; // city must save;
+vector<int> num_path;
+vector<int> max_rescue;
+
 
 
 int get_weight(int start, int end)
@@ -60,11 +47,11 @@ void dijkstra(int src)
 		dist[i] = INT_MAX;
 		sptSet[i] = false;
 
-		previous_list[i].key = i;
-		previous_list[i].next = -1;
 	}
   	
 	dist[src] = 0; // Distance of source vertex from itself is always 0
+	num_path[src] = 1;
+	max_rescue[src] = rescue[src];
   
 	for (int i=0;i<num_v;i++)
 	{
@@ -75,16 +62,19 @@ void dijkstra(int src)
 		{			
 			if (!sptSet[j] && get_weight(min_index, j) && dist[min_index]!=INT_MAX)
 			{
-				if(dist[min_index]+get_weight(min_index, j)<dist[j])
+				if(dist[min_index] + get_weight(min_index, j) < dist[j])
 				{
 					dist[j] = dist[min_index] + get_weight(min_index, j);
-					
-					previous_list[j].previous_member.clear();
-					previous_list[j].previous_member.push_back(min_index);
+					num_path[j] = num_path[min_index];
+					max_rescue[j] = max_rescue[min_index] + rescue[j];
 				}
-				else if(dist[min_index]+get_weight(min_index, j)==dist[j])
+				else if(dist[min_index] + get_weight(min_index, j)==dist[j])
 				{
-					previous_list[j].previous_member.push_back(min_index);
+					num_path[j] = num_path[j] + num_path[min_index];
+					if(max_rescue[min_index] + rescue[j] > max_rescue[j])
+					{
+						max_rescue[j] = max_rescue[min_index] + rescue[j];
+					}
 				}
 			}
 		}
@@ -92,34 +82,7 @@ void dijkstra(int src)
 
 }
 
-void tree_dfs(int current)
-{
 
-	if(previous_list[current].key==C2)
-	{
-		int temp = C2;
-		OnePath temp_path;
-		while(temp!=-1)
-		{
-			temp_path.path_member.insert(temp_path.path_member.begin(), temp);
-			temp = previous_list[temp].next;
-		}
-		paths.push_back(temp_path);
-	}
-
-
-	for(int i=0;i<previous_list[current].previous_member.size();i++)
-	{ 
-		previous_list[previous_list[current].previous_member[i]].next = current;
-		tree_dfs(previous_list[current].previous_member[i]);   
-    }	
-}
-
-
-bool compare(OnePath a, OnePath b)
-{
-	return a.total_rescue > b.total_rescue;
-}
 
 
 
@@ -131,7 +94,7 @@ int main()
 	num_v = N;
 	dist.resize(num_v);
 	sptSet.resize(num_v);
-	previous_list.resize(num_v);
+	
 
 	int M; // num of roads;
 	cin>>M;
@@ -140,10 +103,14 @@ int main()
 	cin>>C2;
 
 
-	rescue.resize(N);
+	rescue.resize(num_v);
+	num_path.resize(num_v);
+	max_rescue.resize(num_v);
 	for(int i=0;i<N;i++)
 	{
 		cin>>rescue[i];
+		num_path[i] = 0;
+		max_rescue[i] = 0;
 	}
 
 	// create adjacency matrix;
@@ -167,21 +134,10 @@ int main()
 	}
 
 	
-	dijkstra(C2);
-	tree_dfs(C1);
-
-	for(int i=0;i<paths.size();i++)
-	{
-		paths[i].total_rescue = 0;
-		for(int j=0;j<paths[i].path_member.size();j++)
-		{
-			paths[i].total_rescue += rescue[paths[i].path_member[j]];
-		}
-	}
+	dijkstra(C1);
 	
-	sort(paths.begin(), paths.end(), compare);
+	cout<<num_path[C2]<<" "<<max_rescue[C2];
 
-	cout<<paths.size()<<" "<<paths[0].total_rescue;
 
 	return 0;
 }
