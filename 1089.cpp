@@ -8,71 +8,6 @@ vector<int> sorted;
 vector<int> current; // current sequence in the second line;
 vector<int> result;
 
-int get_min(int x, int y) { return (x<y)? x :y; }
-
-
-void merge(int l, int m, int r)
-{
-    int i, j, k;
-    int n1 = m - l + 1;
-    int n2 =  r - m;
- 
-    int L[n1];
-	int R[n2];
- 
-    for (i = 0; i < n1; i++)	L[i] = current[l + i];
-    for (j = 0; j < n2; j++)	R[j] = current[m + 1+ j];
- 
-
-    /* Merge the temp arrays back into arr[l..r]*/
-    i = 0;
-    j = 0;
-    k = l;
-    while (i < n1 && j < n2)
-    {
-        if (L[i] <= R[j])
-        {
-            current[k] = L[i];
-            i++;
-        }
-        else
-        {
-            current[k] = R[j];
-            j++;
-        }
-        k++;
-    }
- 
-    /* Copy the remaining elements of L[], if there are any */
-    while (i < n1)
-    {
-        current[k] = L[i];
-        i++;
-        k++;
-    }
- 
-    /* Copy the remaining elements of R[], if there are any */
-    while (j < n2)
-    {
-        current[k] = R[j];
-        j++;
-        k++;
-    }
-}
-
-
-void merge_one_more(int curr_size)
-{ 
-	for (int left_start=0; left_start<current.size()-1; left_start += 2*curr_size)
-	{
-	   int mid = left_start + curr_size - 1;
-
-	   int right_end = get_min(left_start + 2*curr_size - 1, current.size()-1);
-
-	   merge(left_start, mid, right_end);
-	}
-}
-
 
 bool compare(int a, int b)
 {
@@ -134,13 +69,28 @@ int main()
 	// merge sort //////////////////////////////////////////////////////////////////////
 	if(flag_insert==false)
 	{
-		merge_one_more(end_location+1);
-
 		cout<<"Merge Sort"<<endl;
-		for(int i=0;i<current.size();i++)
+		int k = 1, flag = 1;
+        while(flag) 
 		{
-			cout<<current[i];
-			if(i!=current.size()-1)    cout<<" ";
+            flag = 0;
+            for (int i = 0; i < N; i++) 
+			{
+                if (original[i] != current[i])
+                    flag = 1;
+            }
+            k = k * 2;
+
+            for (int i = 0; i < N / k; i++)
+                sort(original.begin() + i * k, original.begin() + (i + 1) * k);
+            sort(original.begin() + N / k * k, original.begin() + N);
+        }
+
+		for(int i=0;i<original.size();i++)
+		{
+			cout<<original[i];
+
+			if(i!=original.size()-1)    cout<<" ";
 		}
 
 	}
