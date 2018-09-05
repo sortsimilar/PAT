@@ -74,6 +74,11 @@ void merge_one_more(int curr_size)
 }
 
 
+bool compare(int a, int b)
+{
+	return a < b;
+}
+
 
 int main()
 {
@@ -154,30 +159,13 @@ int main()
 		}
 
 		
-	//	cout<<end_location<<endl;
-		result.erase(result.begin()+end_location);
-
-		int insert_location = 0;
-		if(end_location != N)
-		{			
-			for(int i=end_location-1;i>=0;i--)
-			{
-				if(current[i]<current[end_location])
-				{
-					insert_location = i+1;
-					break;
-				}
-			}
-		}
-
-	//	cout<<insert_location<<endl;
-		result.insert(result.begin()+insert_location, current[end_location]);
+		sort(current.begin(), current.begin()+end_location+1, compare);
 
 
-		for(int i=0;i<result.size();i++)
+		for(int i=0;i<current.size();i++)
 		{
-			cout<<result[i];
-			if(i != result.size()-1)    cout<<" ";
+			cout<<current[i];
+			if(i != current.size()-1)    cout<<" ";
 		}
 
 	}
@@ -187,3 +175,17 @@ int main()
 
 	return 0;
 }
+
+
+
+/*
+
+10
+3 1 2 8 7 5 9 4 6 0
+1 2 3 7 8 5 9 4 6 0
+
+10
+3 1 2 8 7 5 9 4 0 6
+1 3 2 8 5 7 4 9 0 6
+
+*/
