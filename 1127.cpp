@@ -17,16 +17,21 @@ struct NodeResult
 	int level;
 };  
 
+struct CurrentLevel
+{
+	int level;
+	vector<int> level_member;
+};
+
 vector<int> post_order;
 vector<int> in_order;
 
 vector<int> current_level_order;
 
 
-vector<NodeResult> result;
-vector<int> final_result;  
+vector<NodeResult> level_sequence;  
     
-Node* build_tree(int postStart, int postEnd, int midStart, int midEnd)
+Node* build_tree(int inStart, int inEnd, int postStart, int postEnd)
 {  
     if (postStart > postEnd)
 	{  
@@ -35,21 +40,21 @@ Node* build_tree(int postStart, int postEnd, int midStart, int midEnd)
   
     Node * root = new Node;  
     //查找后序队列中，最后一个数据在中序队列中的位置  
-    int i;  
-    for (i = midStart; i <= midEnd; i++)
+    int position;  
+    for (int i=inStart; i<=inEnd; i++)
 	{  
         if (in_order[i] == post_order[postEnd])
 		{  
-            //找到了，中序队列中第i个位置就是的  
+            //找到了，中序队列中第i个位置就是的
+			position = i;  
             break;  
         }  
       
     }  
     //中序队列中距离的起始位置的个数，即第i个位置为根结点，左边num个是它的左子树的个数  
-    int numStart = i - midStart;  
     root->key = post_order[postEnd];  
-    root->left = build_tree(postStart, postStart + numStart - 1, midStart , i - 1);   
-    root->right = build_tree(postStart + numStart, postEnd - 1, i + 1, midEnd);  
+    root->left = build_tree(inStart, position-1, postStart, postStart-inStart+position-1);   
+    root->right = build_tree(position+1, inEnd, postStart-inStart+position, postEnd-1);  
     return root;  
 }  
       
@@ -77,7 +82,7 @@ void level_order(Node * root,int totalNode)
 		temp.key = current->key;
 		temp.level = current->level;
 		
-		result.push_back(temp); 
+		level_sequence.push_back(temp); 
 
 		q.erase(q.begin());
 		
@@ -132,72 +137,44 @@ int main()
     level_order(root, N);  
 
 
-/*
-	for(int i=0;i<result.size();i++)
+	int total_level = level_sequence[level_sequence.size()-1].level;
+
+	vector<CurrentLevel> zigzag;
+	zigzag.resize(total_level+1);
+	for(int i=0;i<level_sequence.size();i++)
 	{
-		cout<<result[i].key<<" "<<result[i].level<<endl;
-	}
-*/
-
-
-	final_result.push_back(result[0].key);
-
-	vector<int> temp_stack;
-	for(int i=1;i<result.size();i++)
-	{
-		if(result[i].level==result[i-1].level)
+		int current_level = level_sequence[i].level;
+		if(current_level % 2 == 1)
 		{
-			temp_stack.push_back(result[i].key);
+			zigzag[current_level].level_member.push_back(level_sequence[i].key);
 		}
 		else
-		{	
-			if(result[i].level % 2 == 0)
-			{
-				for(int j=0;j<temp_stack.size();j++)
-				{
-					final_result.push_back(temp_stack[j]);
-				}
-			}
-			else
-			{
-				for(int j=0;j<temp_stack.size();j++)
-				{
-					final_result.push_back(temp_stack[temp_stack.size()-1-j]);
-				}
-			}
-
-			temp_stack.clear();
-			temp_stack.push_back(result[i].key);
-		}
-
-	}
-
-	if(result[result.size()-1].level % 2 == 1)
-	{
-		for(int j=0;j<temp_stack.size();j++)
 		{
-			final_result.push_back(temp_stack[j]);
+			zigzag[current_level].level_member.insert(zigzag[current_level].level_member.begin(), level_sequence[i].key);
 		}
 	}
-	else
-	{
-		for(int j=0;j<temp_stack.size();j++)
-		{
-			final_result.push_back(temp_stack[temp_stack.size()-1-j]);
-		}
-	}
-  
 
-	for(int i=0;i<final_result.size();i++)
+	for(int i=0;i<total_level+1;i++)
 	{
-		cout<<final_result[i];
-		if(i!=final_result.size()-1)    cout<<" ";
+		for(int j=0;j<zigzag[i].level_member.size();j++)
+		{
+			cout<<zigzag[i].level_member[j];
+			if(j!=zigzag[i].level_member.size()-1)    cout<<" ";
+		}
+		if(i!=total_level)    cout<<" ";
 	}
+
 
 
     return 0;  
 }  
 
 
+/*
 
+8
+12 11 20 17 1 15 8 5
+12 20 17 11 15 8 5 1
+
+*/
 
