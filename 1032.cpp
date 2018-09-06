@@ -1,5 +1,6 @@
 #include<iostream>
 #include<sstream>
+#include<stdio.h>
 #include<string>
 #include<vector>
 using namespace std;
@@ -21,34 +22,12 @@ vector<Node> linklist_first;
 vector<Node> linklist_second;
 
 
-string int_to_string(int addr)
-{
-	string result;
-	stringstream ss;
-	ss<<addr;
-	ss>>result;
-
-
-	if(result != "-1")
-	{
-		while(result.length() < 5)    result = "0" + result;
-	}
-
-	return result;
-}
-
-
 void create_list(int head)
 {
 	int	current = head;
 	while(current != -1)
 	{	
-		Node temp;
-		temp.addr = linklist[current].addr;
-		temp.key = linklist[current].key;
-		temp.next = linklist[current].next;
-		linklist_first.push_back(temp);
-
+		linklist_first.push_back(linklist[current]);
 		current = linklist[current].next;
 	}
 }
@@ -124,7 +103,9 @@ int main()
 			i--;
 			j--;
 		}
-		cout<<int_to_string(linklist_first[i+1].addr);
+
+		if(linklist_first[i+1].addr != -1)    printf("%05d", linklist_first[i+1].addr);
+		else    cout<<"-1";
 	}
 
 
