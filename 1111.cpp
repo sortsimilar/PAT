@@ -52,12 +52,12 @@ int minDistance()
 	int min = INT_MAX;
 	int min_index;
   
-	for (int v=0;v<num_v;v++)
+	for (int i=0;i<num_v;i++)
 	{
-		if (sptSet[v]==false && dist[v]<=min)
+		if (sptSet[i]==false && dist[i]<=min)
 		{
-			min = dist[v];
-			min_index = v;
+			min = dist[i];
+			min_index = i;
 		}
 	}  
 
@@ -71,12 +71,12 @@ int minDistance_t()
 	int min = INT_MAX;
 	int min_index;
   
-	for (int v=0;v<num_v;v++)
+	for (int i=0;i<num_v;i++)
 	{
-		if (sptSet_t[v]==false && dist_t[v]<=min)
+		if (sptSet_t[i]==false && dist_t[i]<=min)
 		{
-			min = dist_t[v];
-			min_index = v;
+			min = dist_t[i];
+			min_index = i;
 		}
 	}  
 
@@ -99,23 +99,23 @@ void dijkstra(int src)
   
 	for (int i=0;i<num_v;i++)
 	{
-		int u = minDistance();
-		sptSet[u] = true;
+		int min_index = minDistance();
+		sptSet[min_index] = true;
 
-		for (int v=0;v<num_v;v++)
+		for (int j=0;j<num_v;j++)
 		{
-			if (!sptSet[v] && get_weight(u, v) && dist[u]!=INT_MAX)
+			if (!sptSet[j] && get_weight(min_index, j) && dist[min_index]!=INT_MAX)
 			{
-				if(dist[u]+get_weight(u, v)<dist[v])
+				if(dist[min_index]+get_weight(min_index, j)<dist[j])
 				{
-					dist[v] = dist[u] + get_weight(u, v);
+					dist[j] = dist[min_index] + get_weight(min_index, j);
 					
-					previous_list[v].previous_member.clear();
-					previous_list[v].previous_member.push_back(u);
+					previous_list[j].previous_member.clear();
+					previous_list[j].previous_member.push_back(min_index);
 				}
-				else if(dist[u]+get_weight(u, v)==dist[v])
+				else if(dist[min_index]+get_weight(min_index, j)==dist[j])
 				{
-					previous_list[v].previous_member.push_back(u);
+					previous_list[j].previous_member.push_back(min_index);
 				}
 			}
 		}
@@ -139,23 +139,23 @@ void dijkstra_t(int src)
   
 	for (int i=0;i<num_v;i++)
 	{
-		int u = minDistance_t();
-		sptSet_t[u] = true;
+		int min_index = minDistance_t();
+		sptSet_t[min_index] = true;
 
-		for (int v=0;v<num_v;v++)
+		for (int j=0;j<num_v;j++)
 		{
-			if (!sptSet_t[v] && get_time(u, v) && dist_t[u]!=INT_MAX)
+			if (!sptSet_t[j] && get_time(min_index, j) && dist_t[min_index]!=INT_MAX)
 			{
-				if(dist_t[u]+get_time(u, v)<dist_t[v])
+				if(dist_t[min_index]+get_time(min_index, j)<dist_t[j])
 				{
-					dist_t[v] = dist_t[u] + get_time(u, v);
+					dist_t[j] = dist_t[min_index] + get_time(min_index, j);
 					
-					previous_list_t[v].previous_member.clear();
-					previous_list_t[v].previous_member.push_back(u);
+					previous_list_t[j].previous_member.clear();
+					previous_list_t[j].previous_member.push_back(min_index);
 				}
-				else if(dist_t[u]+get_time(u, v)==dist_t[v])
+				else if(dist_t[min_index]+get_time(min_index, j)==dist_t[j])
 				{
-					previous_list_t[v].previous_member.push_back(u);
+					previous_list_t[j].previous_member.push_back(min_index);
 				}
 			}
 		}
