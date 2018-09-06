@@ -5,16 +5,6 @@
 using namespace std;
 
 
-struct Edge
-{
-	int start;
-	int end;
-	bool one_way;
-	int weight;
-	int time;
-};
-
-
 struct PreviousNode
 {
 	int key;
@@ -31,8 +21,6 @@ struct OnePath
 
 
 int num_v; // Number of vertices in the graph
-vector<Edge> store_edge;
-
 vector<int> dist;
 vector<bool> sptSet;
 vector<PreviousNode> previous_list;
@@ -254,20 +242,6 @@ int main()
 	int M; // number of streets;
 	cin>>M;
 
-	store_edge.resize(M);
-	for(int i=0;i<store_edge.size();i++)
-	{
-		cin>>store_edge[i].start;
-		cin>>store_edge[i].end;
-		cin>>store_edge[i].one_way;
-		cin>>store_edge[i].weight;
-		cin>>store_edge[i].time;
-	}
-
-	int src;
-	cin>>src;
-	int dest;
-	cin>>dest;
 
 	// create adjacency matrix;
 	adjacency_matrix.resize(num_v*num_v);
@@ -283,27 +257,40 @@ int main()
 
 	
 	// save current amp in adjacency matrix;
-	for(int i=0;i<store_edge.size();i++)
+	for(int i=0;i<M;i++)
 	{
-		int start = store_edge[i].start;
-		int end = store_edge[i].end;
-		bool one_way = store_edge[i].one_way;
+		int start;
+		cin>>start;
+		int end;
+		cin>>end;
+		bool one_way;
+		cin>>one_way;
+		int weight;
+		cin>>weight;
+		int time;
+		cin>>time;
 
 		if(one_way==false)
 		{
-			adjacency_matrix[start*num_v + end] = store_edge[i].weight;
-			adjacency_matrix[start + end*num_v] = store_edge[i].weight;
+			adjacency_matrix[start*num_v + end] = weight;
+			adjacency_matrix[start + end*num_v] = weight;
 
-			adjacency_time[start*num_v + end] = store_edge[i].time;
-			adjacency_time[start + end*num_v] = store_edge[i].time;
+			adjacency_time[start*num_v + end] = time;
+			adjacency_time[start + end*num_v] = time;
 		}
 		else
 		{
-			adjacency_matrix[start*num_v + end] = store_edge[i].weight;
+			adjacency_matrix[start*num_v + end] = weight;
 
-			adjacency_time[start*num_v + end] = store_edge[i].time;
+			adjacency_time[start*num_v + end] = time;
 		}
 	}
+
+
+	int src;
+	cin>>src;
+	int dest;
+	cin>>dest;
 
 
 	// calculate length path; /////////////////////////////
@@ -386,5 +373,39 @@ int main()
 }
 
 
+/*
 
+10 15
+0 1 0 1 1
+8 0 0 1 1
+4 8 1 1 1
+3 4 0 3 2
+3 9 1 4 1
+0 6 0 1 1
+7 5 1 2 1
+8 5 1 2 1
+2 3 0 2 2
+2 1 1 1 1
+1 3 0 3 1
+1 4 0 1 1
+9 7 1 3 1
+5 1 0 5 2
+6 5 1 1 2
+3 5
+
+
+
+7 9
+0 4 1 1 1
+1 6 1 1 3
+2 6 1 1 1
+2 5 1 2 2
+3 0 0 1 1
+3 1 1 1 3
+3 2 1 1 2
+4 5 0 2 2
+6 5 1 1 2
+3 5
+
+*/
 
