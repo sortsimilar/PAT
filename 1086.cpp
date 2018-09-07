@@ -7,25 +7,41 @@ using namespace std;
 struct Node
 {  
     int key;  
-    int left;  
-    int right;  
+    Node *left;  
+    Node *right;  
 }; 
 
-vector<int> tree_stack;
-vector<string> command;
-vector<int> result;
-vector<Node> binary;
 
+vector<int> pre_order;
+vector<int> in_order;
+vector<int> post_order;
 
-void post_order(Node current)
+Node* build_tree(int inStart, int inEnd, int preStart, int preEnd)
 {
-	if((current.key==-1))    return;	
+	if(inStart>inEnd || preStart>preEnd)    return NULL;
 
-	if(current.left!=-1)    post_order(binary[current.left]);	
-	if(current.right!=-1)    post_order(binary[current.right]);
+	Node* root = new Node;
+	
+	int position;
+	for(int i=inStart;i<=inEnd;i++)
+	{
+		if(in_order[i]==pre_order[preStart])
+		{
+			position = i;
+			break;
+		}
+	}
 
-	result.push_back(current.key);
+	root->key = pre_order[preStart];
+	root->left = build_tree(inStart, position-1, preStart+1, preStart-inStart+position);
+	root->right = build_tree(position+1, inEnd, preStart-inStart+position+1, preEnd);
+
+	post_order.push_back(root->key);
+
+	return root;
 }
+
+
 
 
 int main()
@@ -33,78 +49,61 @@ int main()
 	int N; // number of nodes in a tree;
 	cin>>N; 
 
-	binary.resize(N);
-	for(int i=0;i<binary.size();i++)
-	{
-		binary[i].key = i;
-		binary[i].left = -1;
-		binary[i].right = -1;
-	}
-
-	int root;
-	int pop_node;
+	vector<int> tree_stack;
 	for(int i=0;i<2*N;i++)
 	{
-		string temp_string;
-		cin>>temp_string;
+		string command;
+		cin>>command;
 
-		command.push_back(temp_string);		
-		
-
-	
-		if(temp_string=="Push") // push operation;
+		if(command=="Push")
 		{
-			int number;
-			cin>>number;
-
-
-			if(i>0)
-			{
-				if(command[i-1]=="Push")
-				{
-					int parent = tree_stack.back();
-					binary[parent-1].left = number-1;
-				}
-				else
-				{
-					int parent = pop_node;
-					binary[parent-1].right = number-1;
-				}
-
-			}
-			else
-			{
-				root = number - 1;
-			}
-
-
-			tree_stack.push_back(number);
+			int value;
+			cin>>value;
+			pre_order.push_back(value);
+			tree_stack.push_back(value);
 		}
-		else // pop operation;
+		else if(command=="Pop")
 		{
-//			cout<<tree_stack.back();
-
-			pop_node = tree_stack.back();
+			int value = tree_stack[tree_stack.size()-1];
+			in_order.push_back(value);
 			tree_stack.pop_back();
 		}
+
 	}
 
+/*
+	for(int i=0;i<pre_order.size();i++)    cout<<pre_order[i]<<" ";
+	cout<<endl;
+	for(int i=0;i<in_order.size();i++)    cout<<in_order[i]<<" ";
+*/
 
+	Node *root = build_tree(0, N-1, 0, N-1);
 
-//	cout<<root;
-
-	post_order(binary[root]);
-
-	for(int i=0;i<result.size();i++)
+	for(int i=0;i<post_order.size();i++)
 	{
-		cout<<result[i]+1;
-
-		if(i!=result.size()-1)    cout<<" ";
+		cout<<post_order[i];
+		
+		if(i != post_order.size()-1)    cout<<" ";
 	}
-
 
 	return 0;
 }
 
 
+/*
 
+6
+Push 1
+Push 2
+Push 3
+Pop
+Pop
+Push 4
+Pop
+Pop
+Push 5
+Push 6
+Pop
+Pop
+
+*/
