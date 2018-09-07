@@ -4,51 +4,48 @@ using namespace std;
 
 struct Node
 {
-	int name;
 	int value;
-	int left;
-	int right;
+	Node *left;
+	Node *right;
 	int level;
 };
 
-vector<Node> binary;
-vector<int> level_sequence;
-vector<int> hash_level;
 
-void level_order(int root)
+vector<int> level_sum;
+
+
+Node* build_tree(Node *root, int value, int level)
 {
-	vector<int> q;
-	q.push_back(root);
-	binary[root].level = 0;
-
-	while(!q.empty())
+	if(root==NULL)
 	{
-		int current = q[0];
-		q.erase(q.begin());
-		level_sequence.push_back(current);
+		root = new Node;
+		root->value = value;
+		root->level = level;
+		root->left = NULL;
+		root->right = NULL;
 
-		if(hash_level.size() <= binary[current].level)
+		if(root->level>=level_sum.size())
 		{
-			hash_level.push_back(1);
+			level_sum.push_back(1);
 		}
 		else
 		{
-			hash_level[binary[current].level]++;
-		}
-
-
-		if(binary[current].left != -1)
-		{
-			q.push_back(binary[current].left);
-			binary[binary[current].left].level = binary[current].level + 1;
-		}
-
-		if(binary[current].right != -1)    
-		{
-			q.push_back(binary[current].right);
-			binary[binary[current].right].level = binary[current].level + 1;
+			level_sum[root->level]++;
 		}
 	}
+	else
+	{
+		if(value <= root->value)
+		{
+			root->left = build_tree(root->left, value, root->level+1);
+		}
+		else
+		{
+			root->right = build_tree(root->right, value, root->level+1);
+		}
+	}
+
+	return root;
 }
 
 
@@ -59,50 +56,18 @@ int main()
 	int N;
 	cin>>N;	
 
-	binary.resize(N);
-	for(int i=0;i<binary.size();i++)
+	Node *root = NULL;
+	for(int i=0;i<N;i++)
 	{
-		cin>>binary[i].value;
-		binary[i].name = i;
-		binary[i].left = -1;
-		binary[i].right = -1;
-	}
-
-	for(int i=1;i<N;i++)
-	{
-		int y;
-		int x = binary[0].name;
-
-		while(x != -1)
-		{
-			y = x;
-			if(binary[i].value <= binary[x].value)
-			{
-				x = binary[x].left;
-			}
-			else
-			{
-				x = binary[x].right;
-			}
-		}
-	
-		// insert progress; 
-		if(binary[i].value <= binary[y].value)
-		{
-		    binary[y].left = i;
-		}
-		else
-		{
-		    binary[y].right = i;
-		}
+		int value;
+		cin>>value;
+		root = build_tree(root, value, 0);
 	}
 
 	// get height of binary search tree;
-	level_order(0);
 
-
-	int first = hash_level[hash_level.size()-1];
-	int second = hash_level[hash_level.size()-2];
+	int first = level_sum[level_sum.size()-1];
+	int second = level_sum[level_sum.size()-2];
 	cout<<first<<" + "<<second<<" = "<<first+second;
 
 
